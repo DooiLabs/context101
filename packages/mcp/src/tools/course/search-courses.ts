@@ -33,15 +33,13 @@ async function formatCourseList(courses: CourseMeta[]) {
   if (!courses.length) return "No courses found.";
   const lines = await Promise.all(
     courses.map(async (course) => {
-      let lessonTitles = course.overview?.lessons ?? [];
-      let stepCounts = course.overview?.stepCounts ?? [];
+      const lessonTitles = course.overview?.lessons ?? [];
+      const stepCounts = course.overview?.stepCounts ?? [];
       let totalSteps = course.overview?.totalSteps;
 
-      if (!lessonTitles.length || !stepCounts.length) {
+      if (!lessonTitles.length || !stepCounts.length || totalSteps === undefined) {
         const content = await buildCourseContent(course.id);
-        lessonTitles = content.lessons.map((lesson) => lesson.title);
-        stepCounts = content.lessons.map((lesson) => lesson.steps.length);
-        totalSteps = stepCounts.reduce((sum, count) => sum + count, 0);
+        totalSteps = content.lessons.reduce((sum, lesson) => sum + lesson.steps.length, 0);
       }
 
       const overview = formatCourseOverview(lessonTitles, stepCounts, totalSteps);

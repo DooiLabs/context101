@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fromPackageRoot } from "../../lib/path.js";
-import { canUsePublicCourseApi, getStep, listCourses, listLessons, listSteps } from "./course-api.js";
+import { getStep, listCourses, listLessons, listSteps } from "./course-api.js";
 import { normalizeId, titleFromId } from "./utils.js";
 
 export type CourseMeta = {
@@ -57,14 +57,12 @@ export async function buildCourseMeta(courseDir: string): Promise<CourseMeta> {
   };
 }
 
-export async function buildCourseContent(courseDir: string): Promise<CourseContent> {
-  const id = normalizeId(courseDir);
+async function tryFetchCourseContent(courseId: string): Promise<CourseContent | null> {
   try {
-    if (canUsePublicCourseApi()) {
-    const lessonsResponse = await listLessons(id);
+    const lessonsResponse = await listLessons(courseId);
     const lessons = await Promise.all(
       lessonsResponse.data.map(async (lesson) => {
-        const stepsResponse = await listSteps(id, lesson.id);
+        const stepsResponse = await listSteps(courseId, lesson.id);
         return {
           id: lesson.id,
           title: lesson.title,
@@ -80,12 +78,19 @@ export async function buildCourseContent(courseDir: string): Promise<CourseConte
       })
     );
     return {
-      courseId: id,
+      courseId,
       lessons,
     };
-    }
   } catch {
-    // Fall back to local content if the public API is unavailable.
+    return null;
+  }
+}
+
+export async function buildCourseContent(courseDir: string): Promise<CourseContent> {
+  const id = normalizeId(courseDir);
+  const remoteContent = await tryFetchCourseContent(id);
+  if (remoteContent) {
+    return remoteContent;
   }
 
   const coursePath = path.join(coursesBaseDir, courseDir);
@@ -152,28 +157,25 @@ export async function buildCourseContent(courseDir: string): Promise<CourseConte
 
 export async function loadCourseCatalog(limit: number) {
   try {
-    if (canUsePublicCourseApi()) {
-      const response = await listCourses(undefined, limit, 0);
-      return response.data.map((course) => ({
-        id: course.id,
-        title: course.title,
-        description: course.description ?? "",
-        tags: course.tags ?? [],
-        source: "context101",
-        version: course.version,
-        updatedAt: course.updatedAt,
-        status:
-          course.status === "draft" || course.status === "archived" ? course.status : "active",
-        overview: course.overview
-          ? {
-              lessons: course.overview.lessons ?? [],
-              lessonIds: course.overview.lessonIds ?? [],
-              stepCounts: course.overview.stepCounts ?? [],
-              totalSteps: course.overview.totalSteps ?? undefined,
-            }
-          : undefined,
-      })) satisfies CourseMeta[];
-    }
+    const response = await listCourses(undefined, limit, 0);
+    return response.data.map((course) => ({
+      id: course.id,
+      title: course.title,
+      description: course.description ?? "",
+      tags: course.tags ?? [],
+      source: "context101",
+      version: course.version,
+      updatedAt: course.updatedAt,
+      status: course.status === "draft" || course.status === "archived" ? course.status : "active",
+      overview: course.overview
+        ? {
+            lessons: course.overview.lessons ?? [],
+            lessonIds: course.overview.lessonIds ?? [],
+            stepCounts: course.overview.stepCounts ?? [],
+            totalSteps: course.overview.totalSteps ?? undefined,
+          }
+        : undefined,
+    })) satisfies CourseMeta[];
   } catch {
     // Fall back to local content if the public API is unavailable.
   }
@@ -237,10 +239,8 @@ export async function fetchStepContent(
   contentPath?: string
 ) {
   try {
-    if (canUsePublicCourseApi()) {
-      const response = await getStep(courseId, lessonId, stepId);
-      return response.data.content;
-    }
+    const response = await getStep(courseId, lessonId, stepId);
+    return response.data.content;
   } catch {
     // Fall back to local content if the public API is unavailable.
   }

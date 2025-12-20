@@ -93,9 +93,6 @@ export function canUseCourseApi(apiKey?: string) {
   return Boolean(apiKey);
 }
 
-export function canUsePublicCourseApi() {
-  return true;
-}
 
 export async function fetchCourseProgress(courseId: string, apiKey: string) {
   return requestJson<ProgressResponse>(buildUrl(`/api/progress/${courseId}`), {
