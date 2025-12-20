@@ -1,5 +1,5 @@
 import { searchCoursesInputSchema } from "./schemas.js";
-import { loadCourseCatalog, CourseMeta } from "./course-content.js";
+import { buildCourseContent, loadCourseCatalog, CourseMeta } from "./course-content.js";
 
 function scoreCourse(query: string, course: CourseMeta) {
   const q = query.toLowerCase();
@@ -21,9 +21,33 @@ async function searchCourses(query: string, limit: number) {
     .map((item) => item.course);
 }
 
-function formatCourseList(courses: CourseMeta[]) {
+function formatCourseOverview(lessonTitles: string[], stepCounts: number[], totalSteps?: number) {
+  if (!lessonTitles.length) return "Lessons: none";
+  const lessonSummary = lessonTitles.join(", ");
+  const stepSummary = stepCounts.map((count) => String(count)).join(", ");
+  const total = totalSteps !== undefined ? ` | Total steps: ${totalSteps}` : "";
+  return `Lessons: ${lessonSummary} | Steps per lesson: ${stepSummary}${total}`;
+}
+
+async function formatCourseList(courses: CourseMeta[]) {
   if (!courses.length) return "No courses found.";
-  const lines = courses.map((course) => `- ${course.title} (${course.id})`);
+  const lines = await Promise.all(
+    courses.map(async (course) => {
+      let lessonTitles = course.overview?.lessons ?? [];
+      let stepCounts = course.overview?.stepCounts ?? [];
+      let totalSteps = course.overview?.totalSteps;
+
+      if (!lessonTitles.length || !stepCounts.length) {
+        const content = await buildCourseContent(course.id);
+        lessonTitles = content.lessons.map((lesson) => lesson.title);
+        stepCounts = content.lessons.map((lesson) => lesson.steps.length);
+        totalSteps = stepCounts.reduce((sum, count) => sum + count, 0);
+      }
+
+      const overview = formatCourseOverview(lessonTitles, stepCounts, totalSteps);
+      return `- ${course.title} (${course.id}) | ${overview}`;
+    })
+  );
   return ["Available courses:", "", ...lines].join("\n");
 }
 

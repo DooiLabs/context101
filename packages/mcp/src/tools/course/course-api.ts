@@ -28,6 +28,12 @@ type CourseListResponse = {
     version?: string;
     status: string;
     updatedAt: string;
+    overview?: {
+      lessons?: string[];
+      lessonIds?: string[];
+      stepCounts?: number[];
+      totalSteps?: number;
+    };
   }>;
 };
 

@@ -13,6 +13,12 @@ export type CourseMeta = {
   version?: string;
   updatedAt: string;
   status: "active" | "draft" | "archived";
+  overview?: {
+    lessons: string[];
+    lessonIds?: string[];
+    stepCounts: number[];
+    totalSteps?: number;
+  };
 };
 
 export type CourseContent = {
@@ -158,6 +164,14 @@ export async function loadCourseCatalog(limit: number) {
         updatedAt: course.updatedAt,
         status:
           course.status === "draft" || course.status === "archived" ? course.status : "active",
+        overview: course.overview
+          ? {
+              lessons: course.overview.lessons ?? [],
+              lessonIds: course.overview.lessonIds ?? [],
+              stepCounts: course.overview.stepCounts ?? [],
+              totalSteps: course.overview.totalSteps ?? undefined,
+            }
+          : undefined,
       })) satisfies CourseMeta[];
     }
   } catch {
