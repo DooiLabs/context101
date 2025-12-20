@@ -11,12 +11,12 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { Command } from "commander";
 import { AsyncLocalStorage } from "async_hooks";
 import {
-  startMastraCourse,
-  getMastraCourseStatus,
-  startMastraCourseLesson,
-  nextMastraCourseStep,
-  clearMastraCourseHistory,
-} from "./tools/course.js";
+  searchCoursesTool,
+  startCourseTool,
+  nextCourseStepTool,
+  getCourseStatusTool,
+  clearCourseProgressTool,
+} from "./tools/course/index.js";
 
 /** Default number of results to return per page */
 const DEFAULT_RESULTS_LIMIT = 10;
@@ -270,11 +270,11 @@ server.registerTool(
 );
 
 const courseTools = [
-  startMastraCourse,
-  getMastraCourseStatus,
-  startMastraCourseLesson,
-  nextMastraCourseStep,
-  clearMastraCourseHistory,
+  searchCoursesTool,
+  startCourseTool,
+  nextCourseStepTool,
+  getCourseStatusTool,
+  clearCourseProgressTool,
 ];
 
 for (const tool of courseTools) {
@@ -286,7 +286,8 @@ for (const tool of courseTools) {
       inputSchema: tool.parameters,
     },
     async (args: unknown) => {
-      const text = await tool.execute(args as any);
+      const ctx = requestContext.getStore();
+      const text = await tool.execute(args as any, { apiKey: ctx?.apiKey });
       return {
         content: [
           {
