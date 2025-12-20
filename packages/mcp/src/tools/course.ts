@@ -43,6 +43,40 @@ type CourseProgress = {
 const coursesBaseDir = fromPackageRoot(".docs/raw/course");
 const progressBaseDir = path.join(os.homedir(), ".cache", "context101", "course");
 
+function buildIntroductionPrompt(courseTitle: string, courseId: string) {
+  return `
+This is a course to help a new user learn about ${courseTitle}.
+The following is the introduction content, please provide this text to the user EXACTLY as written below. Do not provide any other text or instructions:
+
+# Welcome to the ${courseTitle} Course!
+
+Thank you for registering for the ${courseTitle} course! This interactive guide will help you learn the material step by step.
+
+## How This Course Works
+
+- Each lesson is broken into multiple steps
+- I'll guide you through the code examples and explanations
+- You can ask questions at any time
+- If you ever leave and come back, use the \`startCourse\` tool to pick up where you left off. Just ask to "start the ${courseId} course".
+- Use the \`nextCourseStep\` tool to move to the next step when you're ready. Just ask to "move to the next step" when you are ready.
+- Use the \`getCourseStatus\` tool to check your progress. You can just ask "get my course progress".
+- Use the \`clearCourseProgress\` tool to reset your progress and start over. You can just ask "clear my course progress".
+
+Type "start ${courseId} course" and let's get started with your first lesson!
+`;
+}
+
+const lessonPrompt = `
+This is a course to help a new user learn the topic at hand.
+Please help the user through the steps of the course by walking them through the content and following the course
+to write the initial version of the code for them. The goal is to show them how the code works and explain it as they go
+as the course goes on. Each lesson is broken up into steps. You should return the content of the step and ask the user
+to move to the next step when they are ready. If the step contains instructions to write code, you should write the code
+for the user when possible. You should always briefly explain the step before writing the code. Please ensure to
+return any text in markdown blockquotes exactly as written in your response. When the user ask about their course progress or course status,
+make sure to include the course status url in your response. This is important.
+`;
+
 const searchCoursesInputSchema = z.object({
   query: z.string().min(1).describe("Search query to find courses."),
   limit: z.number().int().min(1).max(50).optional().default(10),
@@ -135,7 +169,7 @@ async function buildCourseContent(courseDir: string): Promise<CourseContent> {
   const id = normalizeId(courseDir);
   const coursePath = path.join(coursesBaseDir, courseDir);
   const entries = await fs.readdir(coursePath, { withFileTypes: true });
-  const steps = entries
+  const fileSteps = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => ({
       id: normalizeId(entry.name.replace(/\.md$/, "")),
@@ -145,15 +179,51 @@ async function buildCourseContent(courseDir: string): Promise<CourseContent> {
     }))
     .sort((a, b) => a.order - b.order);
 
+  const lessonDirs = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => {
+      const orderA = parseInt(a.split("-")[0] || "0", 10);
+      const orderB = parseInt(b.split("-")[0] || "0", 10);
+      return orderA - orderB;
+    });
+
+  const lessonsFromDirs = await Promise.all(
+    lessonDirs.map(async (dirName) => {
+      const lessonPath = path.join(coursePath, dirName);
+      const lessonEntries = await fs.readdir(lessonPath, { withFileTypes: true });
+      const lessonSteps = lessonEntries
+        .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+        .map((entry) => ({
+          id: normalizeId(entry.name.replace(/\.md$/, "")),
+          title: titleFromId(entry.name.replace(/\.md$/, "")),
+          contentPath: path.join(lessonPath, entry.name),
+          order: parseInt(entry.name.split("-")[0] || "0", 10),
+        }))
+        .sort((a, b) => a.order - b.order);
+
+      return {
+        id: normalizeId(dirName),
+        title: titleFromId(dirName),
+        steps: lessonSteps,
+      };
+    })
+  );
+
+  const lessons =
+    lessonsFromDirs.length > 0
+      ? lessonsFromDirs.filter((lesson) => lesson.steps.length > 0)
+      : [
+          {
+            id: "main",
+            title: titleFromId(courseDir),
+            steps: fileSteps,
+          },
+        ];
+
   return {
     courseId: id,
-    lessons: [
-      {
-        id: "main",
-        title: titleFromId(courseDir),
-        steps,
-      },
-    ],
+    lessons,
   };
 }
 
@@ -198,13 +268,19 @@ function formatStartPayload(payload: {
   lessonId: string;
   stepId: string;
   content: string;
+  includeIntro?: boolean;
+  courseTitle: string;
 }) {
+  const intro = payload.includeIntro
+    ? `${buildIntroductionPrompt(payload.courseTitle, payload.courseId)}\n\n`
+    : "";
+  const wrappedContent = `${lessonPrompt}\n\nHere is the content for this step: <StepContent>${payload.content}</StepContent>\n\nWhen you're ready to continue, use the \`nextCourseStep\` tool to move to the next step.`;
   return [
     `Course: ${payload.courseId}`,
     `Lesson: ${payload.lessonId}`,
     `Step: ${payload.stepId}`,
     "",
-    payload.content,
+    `${intro}${wrappedContent}`,
   ].join("\n");
 }
 
@@ -266,6 +342,8 @@ export const startCourseTool = {
       lessonId,
       stepId: step.id,
       content: stepContent,
+      courseTitle: course.title,
+      includeIntro: !useExisting,
     });
   },
 };
@@ -315,6 +393,7 @@ export const nextCourseStepTool = {
       lessonId: lesson.id,
       stepId: nextStep.id,
       content: stepContent,
+      courseTitle: titleFromId(args.courseId),
     });
   },
 };

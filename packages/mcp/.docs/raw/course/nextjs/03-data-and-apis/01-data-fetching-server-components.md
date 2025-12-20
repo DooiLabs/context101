@@ -151,3 +151,22 @@ export default async function Page() {
 - I can explain this concept in one paragraph
 - I can implement a minimal example
 - I know which file(s) this belongs to
+
+## Practice Tasks
+1. Create a minimal example related to this step and run it locally.
+2. Write a short note explaining why this concept matters in the App Router.
+
+## Code Examples
+```tsx
+export default async function Page() {
+  const res = await fetch("https://example.com", { cache: "no-store" });
+  return <pre>{await res.text()}</pre>;
+}
+```
+
+```tsx
+// Example 2: Variation or extension
+export function ExampleVariant() {
+  return <section>Replace with a second example</section>;
+}
+```

@@ -187,3 +187,23 @@ import Image from "next/image";
 - I can explain this concept in one paragraph
 - I can implement a minimal example
 - I know which file(s) this belongs to
+
+## Practice Tasks
+1. Create a minimal example related to this step and run it locally.
+2. Write a short note explaining why this concept matters in the App Router.
+
+## Code Examples
+```tsx
+import Image from "next/image";
+
+export default function Page() {
+  return <Image src="/hero.png" alt="Hero" width={1200} height={600} />;
+}
+```
+
+```tsx
+// Example 2: Variation or extension
+export function ExampleVariant() {
+  return <section>Replace with a second example</section>;
+}
+```
