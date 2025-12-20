@@ -2,7 +2,7 @@ import { startCourseInputSchema } from "./schemas.js";
 import {
   buildCourseContent,
   loadCourseCatalog,
-  loadStepContent,
+  fetchStepContent,
 } from "./course-content.js";
 import { canUseCourseApi, startCourseRemote } from "./course-api.js";
 import { getUserContext, loadUserProgress, saveUserProgress } from "./course-store.js";
@@ -90,7 +90,7 @@ export const startCourseTool = {
     };
 
     await saveUserProgress(userId, progressByCourse);
-    const stepContent = await loadStepContent(step.contentPath);
+    const stepContent = await fetchStepContent(course.id, lessonId, step.id, step.contentPath);
     return formatStartPayload({
       courseId: course.id,
       lessonId,

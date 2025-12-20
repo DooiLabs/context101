@@ -1,5 +1,5 @@
 import { nextCourseStepInputSchema } from "./schemas.js";
-import { buildCourseContent, loadStepContent } from "./course-content.js";
+import { buildCourseContent, fetchStepContent } from "./course-content.js";
 import { canUseCourseApi, nextCourseStepRemote } from "./course-api.js";
 import { getUserContext, loadUserProgress, saveUserProgress } from "./course-store.js";
 import { wrapLessonContent } from "./prompt.js";
@@ -79,7 +79,12 @@ export const nextCourseStepTool = {
     progress.updatedAt = new Date().toISOString();
     await saveUserProgress(userId, progressByCourse);
 
-    const stepContent = await loadStepContent(nextStep.contentPath);
+    const stepContent = await fetchStepContent(
+      args.courseId,
+      lesson.id,
+      nextStep.id,
+      nextStep.contentPath
+    );
     return formatStepPayload({
       courseId: args.courseId,
       lessonId: lesson.id,

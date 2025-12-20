@@ -19,6 +19,43 @@ type StepResponse = {
   };
 };
 
+type CourseListResponse = {
+  data: Array<{
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    version?: string;
+    status: string;
+    updatedAt: string;
+  }>;
+};
+
+type LessonListResponse = {
+  data: Array<{
+    id: string;
+    title: string;
+    order: number;
+  }>;
+};
+
+type StepListResponse = {
+  data: Array<{
+    id: string;
+    title: string;
+    order: number;
+  }>;
+};
+
+type StepDetailResponse = {
+  data: {
+    id: string;
+    title: string;
+    order: number;
+    content: string;
+  };
+};
+
 const COURSE_API_BASE_URL = "https://api.context101.org";
 
 function getBaseUrl() {
@@ -48,6 +85,10 @@ function buildHeaders(apiKey: string) {
 
 export function canUseCourseApi(apiKey?: string) {
   return Boolean(apiKey);
+}
+
+export function canUsePublicCourseApi() {
+  return true;
 }
 
 export async function fetchCourseProgress(courseId: string, apiKey: string) {
@@ -82,4 +123,32 @@ export async function resetCourseRemote(courseId: string, apiKey: string) {
     headers: buildHeaders(apiKey),
     body: JSON.stringify({ confirm: true }),
   });
+}
+
+export async function listCourses(query?: string, limit = 20, offset = 0) {
+  const url = new URL(buildUrl("/api/courses"));
+  if (query) url.searchParams.set("query", query);
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("offset", String(offset));
+  return requestJson<CourseListResponse>(url.toString(), { method: "GET" });
+}
+
+export async function listLessons(courseId: string) {
+  return requestJson<LessonListResponse>(buildUrl(`/api/courses/${courseId}/lessons`), {
+    method: "GET",
+  });
+}
+
+export async function listSteps(courseId: string, lessonId: string) {
+  return requestJson<StepListResponse>(
+    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps`),
+    { method: "GET" }
+  );
+}
+
+export async function getStep(courseId: string, lessonId: string, stepId: string) {
+  return requestJson<StepDetailResponse>(
+    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps/${stepId}`),
+    { method: "GET" }
+  );
 }
