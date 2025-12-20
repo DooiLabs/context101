@@ -1,0 +1,119 @@
+# Catch-All and Optional Catch-All Routes
+
+Catch-all routes allow you to match multiple URL segments with a single route. This is useful for documentation sites, file systems, or any hierarchical content.
+
+**Catch-All Routes [...slug]:**
+
+Matches one or more segments:
+
+```
+app/
+└── docs/
+    └── [...slug]/
+        └── page.tsx    → /docs/* (requires at least one segment)
+```
+
+Examples:
+- `/docs/getting-started` → `slug = ['getting-started']`
+- `/docs/api/authentication` → `slug = ['api', 'authentication']`
+- `/docs` → **404** (doesn't match)
+
+```typescript
+// app/docs/[...slug]/page.tsx
+export default async function DocsPage(props: {
+  params: Promise<{ slug: string[] }>;
+}) {
+  const params = await props.params;
+  const slug = params.slug; // Array of strings
+  
+  return (
+    <div>
+      <h1>Docs: {slug.join('/')}</h1>
+    </div>
+  );
+}
+```
+
+**Optional Catch-All Routes [[...slug]]:**
+
+Matches zero or more segments:
+
+```
+app/
+└── shop/
+    └── [[...slug]]/
+        └── page.tsx    → /shop/* (can match zero segments)
+```
+
+Examples:
+- `/shop` → `slug = undefined` or `[]`
+- `/shop/electronics` → `slug = ['electronics']`
+- `/shop/electronics/laptops` → `slug = ['electronics', 'laptops']`
+
+```typescript
+// app/shop/[[...slug]]/page.tsx
+export default async function ShopPage(props: {
+  params: Promise<{ slug?: string[] }>;
+}) {
+  const params = await props.params;
+  const slug = params.slug || [];
+  
+  if (slug.length === 0) {
+    return <div>All Products</div>;
+  }
+  
+  return <div>Category: {slug.join('/')}</div>;
+}
+```
+
+**Key Differences:**
+
+| Type | Syntax | Matches `/docs` | Matches `/docs/a` | Matches `/docs/a/b` |
+|------|--------|------------------|-------------------|---------------------|
+| Catch-all | `[...slug]` | ❌ 404 | ✅ `['a']` | ✅ `['a', 'b']` |
+| Optional catch-all | `[[...slug]]` | ✅ `[]` | ✅ `['a']` | ✅ `['a', 'b']` |
+
+**Common Use Cases:**
+
+1. **Documentation Sites:**
+   ```
+   /docs/getting-started
+   /docs/api/authentication
+   /docs/guides/deployment
+   ```
+
+2. **File Browsers:**
+   ```
+   /files/folder1/subfolder
+   /files/folder1/subfolder/file.txt
+   ```
+
+3. **Category Pages:**
+   ```
+   /shop (all products)
+   /shop/electronics (category)
+   /shop/electronics/laptops (subcategory)
+   ```
+
+**Accessing Segments:**
+
+```typescript
+const params = await props.params;
+const segments = params.slug || []; // Always an array
+
+// Get first segment
+const first = segments[0];
+
+// Get last segment
+const last = segments[segments.length - 1];
+
+// Join all segments
+const path = segments.join('/');
+```
+
+**Best Practices:**
+
+- Use catch-all for hierarchical content
+- Use optional catch-all when parent route should also work
+- Always handle empty arrays for optional catch-all
+- Consider using `notFound()` for invalid paths
