@@ -146,3 +146,36 @@ export const metadata: Metadata = {
 - Test with social media preview tools
 - Use Google Search Console
 - Validate with SEO tools
+
+## Why this matters
+Styling and deployment choices affect performance, DX, and long-term maintainability.
+A stable design system and a reliable deploy pipeline prevent last-minute issues.
+
+## Key ideas
+- Keep styles scoped by default
+- Optimize assets and images
+- Define a deploy checklist and stick to it
+
+## Mini task
+- Add a global theme token and use it in a component
+- Run a production build and inspect output
+## Example
+```tsx
+// app/page.tsx
+export const metadata = { title: "Home" };
+```
+
+```tsx
+import Image from "next/image";
+
+<Image src="/hero.png" alt="Hero" width={1200} height={600} />
+```
+## Summary
+- You know what this concept is and where it fits in App Router
+- You can apply the core pattern in a real project
+- You can avoid the most common mistakes
+
+## Checklist
+- I can explain this concept in one paragraph
+- I can implement a minimal example
+- I know which file(s) this belongs to

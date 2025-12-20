@@ -116,3 +116,34 @@ export default function UserProfile({ userId }: { userId: string }) {
 **Try It:**
 
 Create a search component that fetches results as the user types!
+
+## Why this matters
+Data is where most apps get complex. Clear server/client boundaries and predictable APIs
+reduce bugs and security risks.
+
+## Key ideas
+- Validate inputs on the server
+- Keep secrets out of client components
+- Prefer server actions and route handlers for mutations
+
+## Mini task
+- Add a route handler that returns JSON
+- Fetch it from a server component and render the result
+## Example
+```tsx
+// app/users/page.tsx
+export default async function Page() {
+  const res = await fetch("https://example.com/api/users", { cache: "no-store" });
+  const users = await res.json();
+  return <pre>{JSON.stringify(users, null, 2)}</pre>;
+}
+```
+## Summary
+- You know what this concept is and where it fits in App Router
+- You can apply the core pattern in a real project
+- You can avoid the most common mistakes
+
+## Checklist
+- I can explain this concept in one paragraph
+- I can implement a minimal example
+- I know which file(s) this belongs to

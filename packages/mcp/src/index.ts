@@ -287,7 +287,8 @@ for (const tool of courseTools) {
     },
     async (args: unknown) => {
       const ctx = requestContext.getStore();
-      const text = await tool.execute(args as any, { apiKey: ctx?.apiKey });
+      const apiKey = ctx?.apiKey || globalApiKey;
+      const text = await tool.execute(args as any, { apiKey });
       return {
         content: [
           {
