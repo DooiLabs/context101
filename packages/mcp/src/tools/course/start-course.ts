@@ -4,6 +4,7 @@ import {
   loadCourseCatalog,
   loadStepContent,
 } from "./course-content.js";
+import { canUseCourseApi, startCourseRemote } from "./course-api.js";
 import { getUserContext, loadUserProgress, saveUserProgress } from "./course-store.js";
 import { buildIntroductionPrompt, wrapLessonContent } from "./prompt.js";
 
@@ -38,12 +39,30 @@ export const startCourseTool = {
     args: { courseId: string; resume?: boolean },
     context?: { apiKey?: string }
   ) => {
-    const { userId, warning } = getUserContext(context?.apiKey);
+    const apiKey = context?.apiKey;
+    const { userId, warning } = getUserContext(apiKey);
 
     const catalog = await loadCourseCatalog(200);
     const course = catalog.find((item) => item.id === args.courseId);
     if (!course) {
       return `Course "${args.courseId}" not found.`;
+    }
+
+    if (canUseCourseApi(apiKey)) {
+      const response = await startCourseRemote(course.id, args.resume !== false, apiKey!);
+      const data = response.data;
+      if (!data || !data.lessonId || !data.stepId || !data.content) {
+        return `Course "${args.courseId}" has no content.`;
+      }
+      return formatStartPayload({
+        courseId: course.id,
+        lessonId: data.lessonId,
+        stepId: data.stepId,
+        content: data.content,
+        courseTitle: course.title,
+        includeIntro: true,
+        warning,
+      });
     }
 
     const content = await buildCourseContent(course.id);

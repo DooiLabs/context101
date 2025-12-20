@@ -1,4 +1,5 @@
 import { clearCourseProgressInputSchema } from "./schemas.js";
+import { canUseCourseApi, resetCourseRemote } from "./course-api.js";
 import { getUserContext, loadUserProgress, saveUserProgress } from "./course-store.js";
 
 export const clearCourseProgressTool = {
@@ -9,10 +10,18 @@ export const clearCourseProgressTool = {
     args: { courseId: string; confirm?: boolean },
     context?: { apiKey?: string }
   ) => {
-    const { userId, warning } = getUserContext(context?.apiKey);
+    const apiKey = context?.apiKey;
+    const { userId, warning } = getUserContext(apiKey);
 
     if (!args.confirm) {
       return "Confirmation required. Call again with confirm: true to clear progress.";
+    }
+
+    if (canUseCourseApi(apiKey)) {
+      await resetCourseRemote(args.courseId, apiKey!);
+      return `Cleared progress for course "${args.courseId}".${
+        warning ? `\n\nWarning: ${warning}` : ""
+      }`;
     }
 
     const progressByCourse = await loadUserProgress(userId);

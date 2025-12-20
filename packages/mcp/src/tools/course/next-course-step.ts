@@ -1,5 +1,6 @@
 import { nextCourseStepInputSchema } from "./schemas.js";
 import { buildCourseContent, loadStepContent } from "./course-content.js";
+import { canUseCourseApi, nextCourseStepRemote } from "./course-api.js";
 import { getUserContext, loadUserProgress, saveUserProgress } from "./course-store.js";
 import { wrapLessonContent } from "./prompt.js";
 
@@ -29,7 +30,26 @@ export const nextCourseStepTool = {
     args: { courseId: string },
     context?: { apiKey?: string }
   ) => {
-    const { userId, warning } = getUserContext(context?.apiKey);
+    const apiKey = context?.apiKey;
+    const { userId, warning } = getUserContext(apiKey);
+
+    if (canUseCourseApi(apiKey)) {
+      const response = await nextCourseStepRemote(args.courseId, apiKey!);
+      const data = response.data;
+      if (data?.status === "completed") {
+        return `Course "${args.courseId}" completed.${warning ? `\n\nWarning: ${warning}` : ""}`;
+      }
+      if (!data || !data.lessonId || !data.stepId || !data.content) {
+        return "No course progress found. Start the course first.";
+      }
+      return formatStepPayload({
+        courseId: args.courseId,
+        lessonId: data.lessonId,
+        stepId: data.stepId,
+        content: data.content,
+        warning,
+      });
+    }
 
     const progressByCourse = await loadUserProgress(userId);
     const progress = progressByCourse[args.courseId];
