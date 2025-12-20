@@ -1,5 +1,5 @@
 {
-  "name": "context101",
+  "name": "@dooilabs/context101",
   "version": "1.0.33",
   "mcpName": "io.github.upstash/context7",
   "description": "MCP server for Context7",
