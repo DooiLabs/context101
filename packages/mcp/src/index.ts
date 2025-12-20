@@ -16,7 +16,7 @@ import {
   nextCourseStepTool,
   getCourseStatusTool,
   clearCourseProgressTool,
-} from "./tools/course.js";
+} from "./tools/course/index.js";
 
 /** Default number of results to return per page */
 const DEFAULT_RESULTS_LIMIT = 10;
