@@ -1,6 +1,6 @@
 {
   "name": "@dooi/context101",
-  "version": "1.0.42",
+  "version": "1.0.43",
   "mcpName": "io.github.upstash/context7",
   "description": "MCP server for Context7",
   "scripts": {
