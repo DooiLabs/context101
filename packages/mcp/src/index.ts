@@ -10,6 +10,13 @@ import express from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { Command } from "commander";
 import { AsyncLocalStorage } from "async_hooks";
+import {
+  startMastraCourse,
+  getMastraCourseStatus,
+  startMastraCourseLesson,
+  nextMastraCourseStep,
+  clearMastraCourseHistory,
+} from "./tools/course.js";
 
 /** Default number of results to return per page */
 const DEFAULT_RESULTS_LIMIT = 10;
@@ -261,6 +268,36 @@ server.registerTool(
     };
   }
 );
+
+const courseTools = [
+  startMastraCourse,
+  getMastraCourseStatus,
+  startMastraCourseLesson,
+  nextMastraCourseStep,
+  clearMastraCourseHistory,
+];
+
+for (const tool of courseTools) {
+  server.registerTool(
+    tool.name,
+    {
+      title: tool.name,
+      description: tool.description,
+      inputSchema: tool.parameters,
+    },
+    async (args: unknown) => {
+      const text = await tool.execute(args as any);
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text,
+          },
+        ],
+      };
+    }
+  );
+}
 
 async function main() {
   const transportType = TRANSPORT_TYPE;
