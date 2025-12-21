@@ -1,9 +1,0 @@
-schema/context7.json
-prettier.config.mjs
-smithery.yaml
-Dockerfile
-eslint.config.js
-*.md
-*.ts
-LICENSE
-public/*
