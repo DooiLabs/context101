@@ -1,5 +1,5 @@
 {
-  "name": "@dooi/context101",
+  "name": "@dooi/context101-mcp-deprecated",
   "version": "1.0.43",
   "mcpName": "io.github.upstash/context7",
   "description": "MCP server for Context7",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/upstash/context7.git",
-    "directory": "packages/mcp"
+    "directory": "packages/mcp-deprecated"
   },
   "keywords": [
     "modelcontextprotocol",
@@ -33,7 +33,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "context7-mcp": "dist/index.js"
+    "context7-mcp-deprecated": "dist/index.js"
   },
   "files": [
     "dist",

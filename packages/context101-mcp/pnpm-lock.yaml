@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.2
       fastmcp:
         specifier: ^3.25.4
         version: 3.25.4(hono@4.11.1)
@@ -107,10 +104,6 @@ packages:
 
   cliui@9.0.1:
     resolution: {integrity: sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w==}
-    engines: {node: '>=20'}
-
-  commander@14.0.2:
-    resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
     engines: {node: '>=20'}
 
   content-disposition@1.0.1:
@@ -707,8 +700,6 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.1.2
       wrap-ansi: 9.0.2
-
-  commander@14.0.2: {}
 
   content-disposition@1.0.1: {}
 
