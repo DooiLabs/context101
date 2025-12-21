@@ -10,10 +10,11 @@ export const clearCourseProgressTool = {
       return `Pass confirm=true to reset progress for course "${args.courseId}".`;
     }
 
-    if (!getCourseSession(args.courseId)) {
+    const session = await getCourseSession(args.courseId);
+    if (!session) {
       return "No course progress found.";
     }
-    clearCourseSession(args.courseId);
+    await clearCourseSession(args.courseId);
     return `Progress for course "${args.courseId}" cleared.`;
   },
 };

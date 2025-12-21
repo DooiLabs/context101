@@ -22,7 +22,7 @@ export const nextCourseStepTool = {
   description: "Advance to the next step in a course.",
   parameters: nextCourseStepInputSchema,
   execute: async (args: { courseId: string }) => {
-    const result = advanceCourseSession(args.courseId);
+    const result = await advanceCourseSession(args.courseId);
     if (result.status === "missing") {
       return "No course progress found. Start the course first.";
     }

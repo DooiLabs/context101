@@ -1,9 +1,8 @@
 import { startCourseInputSchema } from "./schemas.js";
 import {
+  ensureCourseSession,
   fetchStepContent,
-  getCourseSession,
   loadCourseCatalog,
-  startCourseSession,
 } from "./course-content.js";
 import { buildIntroductionPrompt, wrapLessonContent } from "./prompt.js";
 
@@ -39,11 +38,7 @@ export const startCourseTool = {
       return `Course "${args.courseId}" not found.`;
     }
 
-    const existing = getCourseSession(course.id);
-    const session =
-      args.resume !== false && existing
-        ? existing
-        : await startCourseSession(course.id);
+    const session = await ensureCourseSession(course.id, args.resume !== false);
     if (!session) {
       return `Course "${args.courseId}" has no content.`;
     }

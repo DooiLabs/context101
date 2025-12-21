@@ -6,7 +6,7 @@ export const getCourseStatusTool = {
   description: "Get status for a course.",
   parameters: getCourseStatusInputSchema,
   execute: async (args: { courseId: string }) => {
-    const session = getCourseSession(args.courseId);
+    const session = await getCourseSession(args.courseId);
     if (!session) {
       return "No course progress found. Start the course first.";
     }
