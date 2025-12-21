@@ -1,7 +1,7 @@
 {
-  "name": "@dooi/context101-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for Context101 (FastMCP)",
+  "name": "@dooi/context101",
+  "version": "0.0.1",
+  "description": "MCP server for Context101",
   "scripts": {
     "build": "tsc && chmod 755 dist/index.js",
     "typecheck": "tsc --noEmit",
@@ -16,7 +16,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "context101-mcp": "dist/index.js"
+    "context101": "dist/index.js"
   },
   "files": [
     "dist",
