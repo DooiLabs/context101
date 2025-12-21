@@ -1,5 +1,5 @@
 import { searchCoursesInputSchema } from "./schemas.js";
-import { buildCourseContent, loadCourseCatalog, CourseMeta } from "./course-content.js";
+import { loadCourseCatalog, CourseMeta } from "./course-content.js";
 
 function scoreCourse(query: string, course: CourseMeta) {
   const q = query.toLowerCase();
@@ -12,7 +12,7 @@ function scoreCourse(query: string, course: CourseMeta) {
 }
 
 async function searchCourses(query: string, limit: number) {
-  const catalog = await loadCourseCatalog(200);
+  const catalog = await loadCourseCatalog(100);
   return catalog
     .map((course) => ({ course, score: scoreCourse(query, course) }))
     .filter((item) => item.score > 0)
@@ -21,8 +21,12 @@ async function searchCourses(query: string, limit: number) {
     .map((item) => item.course);
 }
 
-function formatCourseOverview(lessonTitles: string[], stepCounts: number[], totalSteps?: number) {
-  if (!lessonTitles.length) return "Lessons: none";
+function formatCourseOverview(
+  lessonTitles: string[],
+  stepCounts: number[],
+  totalSteps?: number,
+) {
+  if (!lessonTitles.length) return "Lessons: unknown";
   const lessonSummary = lessonTitles.join(", ");
   const stepSummary = stepCounts.map((count) => String(count)).join(", ");
   const total = totalSteps !== undefined ? ` | Total steps: ${totalSteps}` : "";
@@ -35,16 +39,14 @@ async function formatCourseList(courses: CourseMeta[]) {
     courses.map(async (course) => {
       const lessonTitles = course.overview?.lessons ?? [];
       const stepCounts = course.overview?.stepCounts ?? [];
-      let totalSteps = course.overview?.totalSteps;
-
-      if (!lessonTitles.length || !stepCounts.length || totalSteps === undefined) {
-        const content = await buildCourseContent(course.id);
-        totalSteps = content.lessons.reduce((sum, lesson) => sum + lesson.steps.length, 0);
-      }
-
-      const overview = formatCourseOverview(lessonTitles, stepCounts, totalSteps);
+      const totalSteps = course.overview?.totalSteps;
+      const overview = formatCourseOverview(
+        lessonTitles,
+        stepCounts,
+        totalSteps,
+      );
       return `- ${course.title} (${course.id}) | ${overview}`;
-    })
+    }),
   );
   return ["Available courses:", "", ...lines].join("\n");
 }

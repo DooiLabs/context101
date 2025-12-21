@@ -1,24 +1,3 @@
-type ProgressResponse = {
-  data: {
-    courseId: string;
-    currentLessonId: string;
-    currentStepId: string;
-    completedSteps: string[];
-    completedLessons: string[];
-    updatedAt: string;
-  };
-};
-
-type StepResponse = {
-  data: {
-    courseId: string;
-    lessonId?: string;
-    stepId?: string;
-    content?: string;
-    status?: string;
-  };
-};
-
 type CourseListResponse = {
   data: Array<{
     id: string;
@@ -28,6 +7,13 @@ type CourseListResponse = {
     version?: string;
     status: string;
     updatedAt: string;
+    sourceLibraryId?: string | null;
+    sourceContext7Url?: string | null;
+    sourceLlmsUrl?: string | null;
+    generatorModel?: string | null;
+    generatedAt?: string | null;
+    generatorJobId?: string | null;
+    generation?: number | null;
     overview?: {
       lessons?: string[];
       lessonIds?: string[];
@@ -35,6 +21,11 @@ type CourseListResponse = {
       totalSteps?: number;
     };
   }>;
+  meta?: {
+    limit?: number;
+    offset?: number;
+    total?: number;
+  };
 };
 
 type LessonListResponse = {
@@ -42,6 +33,8 @@ type LessonListResponse = {
     id: string;
     title: string;
     order: number;
+    sourceTitle?: string | null;
+    rawPath?: string | null;
   }>;
 };
 
@@ -50,6 +43,7 @@ type StepListResponse = {
     id: string;
     title: string;
     order: number;
+    sourceStepNumber?: number | null;
   }>;
 };
 
@@ -58,7 +52,30 @@ type StepDetailResponse = {
     id: string;
     title: string;
     order: number;
+    sourceStepNumber?: number | null;
     content: string;
+  };
+};
+
+type CourseResponse = {
+  data: CourseListResponse["data"][number];
+};
+
+type LessonResponse = {
+  data: LessonListResponse["data"][number];
+};
+
+type SearchStepsResponse = {
+  data: Array<{
+    lessonId: string;
+    stepId: string;
+    title: string;
+    snippet: string;
+  }>;
+  meta?: {
+    limit?: number;
+    offset?: number;
+    total?: number;
   };
 };
 
@@ -82,58 +99,65 @@ async function requestJson<T>(input: string, init: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export async function fetchCourseProgress(courseId: string) {
-  return requestJson<ProgressResponse>(buildUrl(`/api/progress/${courseId}`), {
-    method: "GET",
-  });
-}
-
-export async function startCourseRemote(courseId: string, resume: boolean) {
-  return requestJson<StepResponse>(buildUrl(`/api/progress/${courseId}/start`), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resume }),
-  });
-}
-
-export async function nextCourseStepRemote(courseId: string) {
-  return requestJson<StepResponse>(buildUrl(`/api/progress/${courseId}/next`), {
-    method: "POST",
-  });
-}
-
-export async function resetCourseRemote(courseId: string) {
-  return requestJson<StepResponse>(buildUrl(`/api/progress/${courseId}/reset`), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ confirm: true }),
-  });
-}
-
 export async function listCourses(query?: string, limit = 20, offset = 0) {
   const url = new URL(buildUrl("/api/courses"));
   if (query) url.searchParams.set("query", query);
-  url.searchParams.set("limit", String(limit));
-  url.searchParams.set("offset", String(offset));
+  const safeLimit = Math.min(Math.max(limit, 1), 100);
+  const safeOffset = Math.max(offset, 0);
+  url.searchParams.set("limit", String(safeLimit));
+  url.searchParams.set("offset", String(safeOffset));
   return requestJson<CourseListResponse>(url.toString(), { method: "GET" });
 }
 
-export async function listLessons(courseId: string) {
-  return requestJson<LessonListResponse>(buildUrl(`/api/courses/${courseId}/lessons`), {
+export async function getCourse(courseId: string) {
+  return requestJson<CourseResponse>(buildUrl(`/api/courses/${courseId}`), {
     method: "GET",
   });
+}
+
+export async function listLessons(courseId: string) {
+  return requestJson<LessonListResponse>(
+    buildUrl(`/api/courses/${courseId}/lessons`),
+    {
+      method: "GET",
+    },
+  );
+}
+
+export async function getLesson(courseId: string, lessonId: string) {
+  return requestJson<LessonResponse>(
+    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}`),
+    { method: "GET" },
+  );
 }
 
 export async function listSteps(courseId: string, lessonId: string) {
   return requestJson<StepListResponse>(
     buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps`),
-    { method: "GET" }
+    { method: "GET" },
   );
 }
 
-export async function getStep(courseId: string, lessonId: string, stepId: string) {
+export async function getStep(
+  courseId: string,
+  lessonId: string,
+  stepId: string,
+) {
   return requestJson<StepDetailResponse>(
     buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps/${stepId}`),
-    { method: "GET" }
+    { method: "GET" },
   );
+}
+
+export async function searchCourseSteps(
+  courseId: string,
+  query: string,
+  limit = 10,
+  offset = 0,
+) {
+  const url = new URL(buildUrl(`/api/courses/${courseId}/steps/search`));
+  url.searchParams.set("query", query);
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("offset", String(offset));
+  return requestJson<SearchStepsResponse>(url.toString(), { method: "GET" });
 }

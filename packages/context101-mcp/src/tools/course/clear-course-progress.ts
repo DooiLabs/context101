@@ -1,5 +1,5 @@
 import { clearCourseProgressInputSchema } from "./schemas.js";
-import { resetCourseRemote } from "./course-api.js";
+import { clearCourseSession, getCourseSession } from "./course-content.js";
 
 export const clearCourseProgressTool = {
   name: "clearCourseProgress",
@@ -10,7 +10,10 @@ export const clearCourseProgressTool = {
       return `Pass confirm=true to reset progress for course "${args.courseId}".`;
     }
 
-    await resetCourseRemote(args.courseId);
+    if (!getCourseSession(args.courseId)) {
+      return "No course progress found.";
+    }
+    clearCourseSession(args.courseId);
     return `Progress for course "${args.courseId}" cleared.`;
   },
 };

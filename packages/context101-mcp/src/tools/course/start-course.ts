@@ -1,6 +1,10 @@
 import { startCourseInputSchema } from "./schemas.js";
-import { loadCourseCatalog } from "./course-content.js";
-import { startCourseRemote } from "./course-api.js";
+import {
+  fetchStepContent,
+  getCourseSession,
+  loadCourseCatalog,
+  startCourseSession,
+} from "./course-content.js";
 import { buildIntroductionPrompt, wrapLessonContent } from "./prompt.js";
 
 function formatStartPayload(payload: {
@@ -29,23 +33,30 @@ export const startCourseTool = {
   description: "Start or resume a specific course by courseId.",
   parameters: startCourseInputSchema,
   execute: async (args: { courseId: string; resume?: boolean }) => {
-    const catalog = await loadCourseCatalog(200);
+    const catalog = await loadCourseCatalog(100);
     const course = catalog.find((item) => item.id === args.courseId);
     if (!course) {
       return `Course "${args.courseId}" not found.`;
     }
 
-    const response = await startCourseRemote(course.id, args.resume !== false);
-    const data = response.data;
-    if (!data || !data.lessonId || !data.stepId || !data.content) {
+    const existing = getCourseSession(course.id);
+    const session =
+      args.resume !== false && existing
+        ? existing
+        : await startCourseSession(course.id);
+    if (!session) {
+      return `Course "${args.courseId}" has no content.`;
+    }
+    const step = session.steps[session.index];
+    if (!step) {
       return `Course "${args.courseId}" has no content.`;
     }
 
     return formatStartPayload({
       courseId: course.id,
-      lessonId: data.lessonId,
-      stepId: data.stepId,
-      content: data.content,
+      lessonId: step.lessonId,
+      stepId: step.stepId,
+      content: await fetchStepContent(course.id, step.lessonId, step.stepId),
       courseTitle: course.title,
       includeIntro: true,
     });

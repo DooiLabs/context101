@@ -1,5 +1,5 @@
 import { nextCourseStepInputSchema } from "./schemas.js";
-import { nextCourseStepRemote } from "./course-api.js";
+import { advanceCourseSession, fetchStepContent } from "./course-content.js";
 import { wrapLessonContent } from "./prompt.js";
 
 function formatNextPayload(payload: {
@@ -22,17 +22,28 @@ export const nextCourseStepTool = {
   description: "Advance to the next step in a course.",
   parameters: nextCourseStepInputSchema,
   execute: async (args: { courseId: string }) => {
-    const response = await nextCourseStepRemote(args.courseId);
-    const data = response.data;
-    if (!data || !data.lessonId || !data.stepId || !data.content) {
+    const result = advanceCourseSession(args.courseId);
+    if (result.status === "missing") {
+      return "No course progress found. Start the course first.";
+    }
+    if (result.status === "completed") {
+      return `Course "${args.courseId}" completed.`;
+    }
+
+    const step = result.session.steps[result.session.index];
+    if (!step) {
       return `Course "${args.courseId}" has no next step.`;
     }
 
     return formatNextPayload({
       courseId: args.courseId,
-      lessonId: data.lessonId,
-      stepId: data.stepId,
-      content: data.content,
+      lessonId: step.lessonId,
+      stepId: step.stepId,
+      content: await fetchStepContent(
+        args.courseId,
+        step.lessonId,
+        step.stepId,
+      ),
     });
   },
 };
