@@ -32,7 +32,7 @@ return any text in markdown blockquotes exactly as written in your response. Whe
 make sure to include the course status url in your response. This is important.
 
 Before moving to the next step, you must ask a short quiz question and then call the \`recordQuizResult\` tool with
-the stepId, question, user answer, and grading result. Skip the quiz only for introduction-only steps.
+the stepId, question, correct answer, user answer, and grading result. Skip the quiz only for introduction-only steps.
 `;
 
 export function wrapLessonContent(content: string) {

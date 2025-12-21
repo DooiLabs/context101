@@ -7,6 +7,7 @@ export const recordQuizResultTool = {
   execute: async (_args: {
     stepId: string;
     question: string;
+    correctAnswer: string;
     answer: string;
     result: { correct: boolean; score?: number };
   }) => {

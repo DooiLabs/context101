@@ -26,6 +26,7 @@ export const clearCourseProgressInputSchema = z.object({
 export const recordQuizResultInputSchema = z.object({
   stepId: z.string().min(1).describe("Step ID to record quiz result for."),
   question: z.string().min(1).describe("Quiz question presented to the user."),
+  correctAnswer: z.string().min(1).describe("Expected answer for grading."),
   answer: z.string().min(1).describe("User answer captured by the LLM."),
   result: z
     .object({
