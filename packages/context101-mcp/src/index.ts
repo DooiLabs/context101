@@ -7,6 +7,7 @@ import {
   nextCourseStepTool,
   searchCoursesTool,
   startCourseTool,
+  recordQuizResultTool,
 } from "./tools/course/index.js";
 
 const server = new FastMCP({
@@ -22,6 +23,7 @@ const courseTools = [
   nextCourseStepTool,
   getCourseStatusTool,
   clearCourseProgressTool,
+  recordQuizResultTool,
 ];
 
 for (const tool of courseTools) {

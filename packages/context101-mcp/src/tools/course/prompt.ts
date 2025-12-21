@@ -30,6 +30,9 @@ to move to the next step when they are ready. If the step contains instructions 
 for the user when possible. You should always briefly explain the step before writing the code. Please ensure to
 return any text in markdown blockquotes exactly as written in your response. When the user ask about their course progress or course status,
 make sure to include the course status url in your response. This is important.
+
+Before moving to the next step, you must ask a short quiz question and then call the \`recordQuizResult\` tool with
+the stepId, question, user answer, and grading result. Skip the quiz only for introduction-only steps.
 `;
 
 export function wrapLessonContent(content: string) {
