@@ -9,6 +9,7 @@ import {
   startCourseTool,
   recordQuizResultTool,
 } from "./tools/course/index.js";
+import { getDocsTool } from "./tools/docs/get-docs.js";
 
 const server = new FastMCP({
   name: "Context7",
@@ -24,6 +25,7 @@ const courseTools = [
   getCourseStatusTool,
   clearCourseProgressTool,
   recordQuizResultTool,
+  getDocsTool,
 ];
 
 for (const tool of courseTools) {

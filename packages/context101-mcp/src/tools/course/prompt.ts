@@ -35,6 +35,8 @@ use the \`getCourseStatus\` tool to retrieve it.
 
 Before moving to the next step, you must ask a short quiz question and then call the \`recordQuizResult\` tool with
 the stepId, question, correct answer, user answer, and grading result. Skip the quiz only for introduction-only steps.
+
+When the user asks for library or framework details, call the \`getDocs\` tool first and answer using its response.
 `;
 
 export function wrapLessonContent(content: string) {
