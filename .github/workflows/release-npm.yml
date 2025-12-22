@@ -25,19 +25,16 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: packages/context101-mcp/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        working-directory: packages/context101-mcp
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        working-directory: packages/context101-mcp
         run: pnpm build
 
       - name: Verify tag matches package version
-        working-directory: packages/context101-mcp
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           TAG_NAME="${GITHUB_REF_NAME}"
@@ -49,7 +46,6 @@ jobs:
           fi
 
       - name: Verify version not published
-        working-directory: packages/context101-mcp
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           if npm view @context101/mcp@"$PACKAGE_VERSION" version >/dev/null 2>&1; then
@@ -58,7 +54,6 @@ jobs:
           fi
 
       - name: Publish
-        working-directory: packages/context101-mcp
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

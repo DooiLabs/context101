@@ -3,15 +3,15 @@
   "version": "0.0.1",
   "description": "MCP server for Context101",
   "scripts": {
-    "build": "tsc && chmod 755 dist/index.js",
-    "typecheck": "tsc --noEmit",
-    "dev": "tsc --watch",
+    "build": "tsc -p tsconfig.build.json && chmod 755 dist/index.js",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DooiLabs/context101.git",
-    "directory": "packages/context101-mcp"
+    "directory": "."
   },
   "license": "MIT",
   "type": "module",
