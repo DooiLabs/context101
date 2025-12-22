@@ -2,7 +2,7 @@
   <a href="https://roadmap.sh/"><img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/dc125163-b253-49f0-b6d2-5920c2bfc573" />
 </a>
   <h2 align="center"><a href="https://roadmap.sh">Context101</a></h2>
-  <p align="center">Learn coding directly in your AI code editor<p>
+  <p align="center">Learn to code directly in your AI code editor<p>
   <p align="center">
     <a href="https://roadmap.sh/roadmaps">
     	<img src="https://img.shields.io/badge/%E2%9C%A8-Roadmaps%20-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="roadmaps" />
