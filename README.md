@@ -29,142 +29,65 @@ The AI-native way to learn coding, powered by a MCP based course.
 
 ![](https://i.imgur.com/waxVImv.png)
 
-Here is the list of available courses with more being actively worked upon.
+# Context101 MCP — Learn Coding Inside Your AI Code Editor
 
-> Have a look at the [get started](https://roadmap.sh/get-started) page that might help you pick up a path.
+Context101 is an **MCP server**.
+Add it to your AI code editor (Cursor / VS Code / Windsurf / Claude Code / etc.) and **learn coding without leaving your editor**.
 
-- [Frontend Roadmap](https://roadmap.sh/frontend) / [Frontend Beginner Roadmap](https://roadmap.sh/frontend?r=frontend-beginner)
-- [Backend Roadmap](https://roadmap.sh/backend) / [Backend Beginner Roadmap](https://roadmap.sh/backend?r=backend-beginner)
-- [DevOps Roadmap](https://roadmap.sh/devops) / [DevOps Beginner Roadmap](https://roadmap.sh/devops?r=devops-beginner)
-- [DevSecOps Roadmap](https://roadmap.sh/devsecops)
-- [Full Stack Roadmap](https://roadmap.sh/full-stack)
-- [HTML Roadmap](https://roadmap.sh/html)
-- [CSS Roadmap](https://roadmap.sh/css)
-- [JavaScript Roadmap](https://roadmap.sh/javascript)
-- [TypeScript Roadmap](https://roadmap.sh/typescript)
-- [Git and GitHub](https://roadmap.sh/git-github) / [Git and GitHub Beginner](https://roadmap.sh/git-github?r=git-github-beginner)
-- [API Design Roadmap](https://roadmap.sh/api-design)
-- [Computer Science Roadmap](https://roadmap.sh/computer-science)
-- [Data Structures and Algorithms Roadmap](https://roadmap.sh/datastructures-and-algorithms)
-- [AI and Data Scientist Roadmap](https://roadmap.sh/ai-data-scientist)
-- [AI Engineer Roadmap](https://roadmap.sh/ai-engineer)
-- [AWS Roadmap](https://roadmap.sh/aws)
-- [Cloudflare Roadmap](https://roadmap.sh/cloudflare)
-- [Linux Roadmap](https://roadmap.sh/linux)
-- [Terraform Roadmap](https://roadmap.sh/terraform)
-- [Data Analyst Roadmap](https://roadmap.sh/data-analyst)
-- [BI Analyst Roadmap](https://roadmap.sh/bi-analyst)
-- [Data Engineer Roadmap](https://roadmap.sh/data-engineer)
-- [Machine Learning Roadmap](https://roadmap.sh/machine-learning)
-- [MLOps Roadmap](https://roadmap.sh/mlops)
-- [Product Manager Roadmap](https://roadmap.sh/product-manager)
-- [Engineering Manager Roadmap](https://roadmap.sh/engineering-manager)
-- [QA Roadmap](https://roadmap.sh/qa)
-- [Python Roadmap](https://roadmap.sh/python)
-- [Software Architect Roadmap](https://roadmap.sh/software-architect)
-- [Game Developer Roadmap](https://roadmap.sh/game-developer) / [Server Side Game Developer](https://roadmap.sh/server-side-game-developer)
-- [Software Design and Architecture Roadmap](https://roadmap.sh/software-design-architecture)
-- [C++ Roadmap](https://roadmap.sh/cpp)
-- [React Roadmap](https://roadmap.sh/react)
-- [Next.js Roadmap](https://roadmap.sh/nextjs)
-- [React Native Roadmap](https://roadmap.sh/react-native)
-- [Vue Roadmap](https://roadmap.sh/vue)
-- [Angular Roadmap](https://roadmap.sh/angular)
-- [Node.js Roadmap](https://roadmap.sh/nodejs)
-- [PHP Roadmap](https://roadmap.sh/php)
-- [Wordpress Roadmap](https://roadmap.sh/wordpress)
-- [Laravel Roadmap](https://roadmap.sh/laravel)
-- [GraphQL Roadmap](https://roadmap.sh/graphql)
-- [Android Roadmap](https://roadmap.sh/android)
-- [iOS Roadmap](https://roadmap.sh/ios)
-- [Swift/Swift UI Roadmap](https://roadmap.sh/swift-ui)
-- [Flutter Roadmap](https://roadmap.sh/flutter)
-- [Go Roadmap](https://roadmap.sh/golang)
-- [Rust Roadmap](https://roadmap.sh/rust)
-- [Java Roadmap](https://roadmap.sh/java)
-- [Kotlin Roadmap](https://roadmap.sh/kotlin)
-- [Spring Boot Roadmap](https://roadmap.sh/spring-boot)
-- [Design System Roadmap](https://roadmap.sh/design-system)
-- [PostgreSQL Roadmap](https://roadmap.sh/postgresql-dba)
-- [ElasticSearch Roadmap](https://roadmap.sh/elasticsearch)
-- [SQL Roadmap](https://roadmap.sh/sql)
-- [Redis Roadmap](https://roadmap.sh/redis)
-- [Blockchain Roadmap](https://roadmap.sh/blockchain)
-- [ASP.NET Core Roadmap](https://roadmap.sh/aspnet-core)
-- [System Design Roadmap](https://roadmap.sh/system-design)
-- [Kubernetes Roadmap](https://roadmap.sh/kubernetes)
-- [Cyber Security Roadmap](https://roadmap.sh/cyber-security)
-- [MongoDB Roadmap](https://roadmap.sh/mongodb)
-- [UX Design Roadmap](https://roadmap.sh/ux-design)
-- [Docker Roadmap](https://roadmap.sh/docker)
-- [Prompt Engineering Roadmap](https://roadmap.sh/prompt-engineering)
-- [Technical Writer Roadmap](https://roadmap.sh/technical-writer)
-- [DevRel Engineer Roadmap](https://roadmap.sh/devrel)
-- [AI Red Teaming Roadmap](https://roadmap.sh/ai-red-teaming)
-- [AI Agents Roadmap](https://roadmap.sh/ai-agents)
-- [Bash/Shell Roadmap](https://roadmap.sh/shell-bash)
+## ✅ What it does
 
-There are also interactive best practices:
+LLMs are great at explaining code, but learning gets messy since conversations aren't structured.
 
-- [Backend Performance Best Practices](https://roadmap.sh/best-practices/backend-performance)
-- [Frontend Performance Best Practices](https://roadmap.sh/best-practices/frontend-performance)
-- [Code Review Best Practices](https://roadmap.sh/best-practices/code-review)
-- [API Security Best Practices](https://roadmap.sh/best-practices/api-security)
-- [AWS Best Practices](https://roadmap.sh/best-practices/aws)
+Context101 solves that by delivering a structured course (steps, checkpoints, quizes) **directly into your editor’s AI chat** via MCP.
 
-..and questions to help you test, rate and improve your knowledge
+* ✅ Learn-by-building, inside the editor
+* ✅ No tab switching
+* ✅ Structured guidance (step → code → feedback → next step)
 
-- [JavaScript Questions](https://roadmap.sh/questions/javascript)
-- [Node.js Questions](https://roadmap.sh/questions/nodejs)
-- [React Questions](https://roadmap.sh/questions/react)
-- [Backend Questions](https://roadmap.sh/questions/backend)
-- [Frontend Questions](https://roadmap.sh/questions/frontend)
+## 🛠 Installation
 
-![](https://i.imgur.com/waxVImv.png)
+### Requirements
 
-## Share with the community
+* Node.js >= 18
+* Any MCP client (Cursor, VS Code, Windsurf, Claude Code, etc.)
 
-Please consider sharing a post about [roadmap.sh](https://roadmap.sh) and the value it provides. It really does help!
+### Cursor / Any MCP client (Local, via npx)
 
-[![GitHub Repo stars](https://img.shields.io/badge/share%20on-reddit-red?logo=reddit)](https://reddit.com/submit?url=https://roadmap.sh&title=Interactive%20roadmaps,%20guides%20and%20other%20educational%20content%20for%20Developers)
-[![GitHub Repo stars](https://img.shields.io/badge/share%20on-hacker%20news-orange?logo=ycombinator)](https://news.ycombinator.com/submitlink?u=https://roadmap.sh)
-[![GitHub Repo stars](https://img.shields.io/badge/share%20on-twitter-03A9F4?logo=twitter)](https://twitter.com/share?url=https://roadmap.sh&text=Interactive%20roadmaps,%20guides%20and%20other%20educational%20content%20for%20Developers)
-[![GitHub Repo stars](https://img.shields.io/badge/share%20on-facebook-1976D2?logo=facebook)](https://www.facebook.com/sharer/sharer.php?u=https://roadmap.sh)
-[![GitHub Repo stars](https://img.shields.io/badge/share%20on-linkedin-3949AB?logo=linkedin)](https://www.linkedin.com/shareArticle?url=https://roadmap.sh&title=Interactive%20roadmaps,%20guides%20and%20other%20educational%20content%20for%20Developers)
+Add this to your MCP config:
 
-## Development
-
-Clone the repository, install the dependencies and start the application
-
-```bash
-git clone git@github.com:kamranahmedse/developer-roadmap.git --depth 1
-cd developer-roadmap
-pnpm add @roadmapsh/editor@npm:@roadmapsh/dummy-editor -w
-pnpm install
+```json
+{
+  "mcpServers": {
+    "context101": {
+      "command": "npx",
+      "args": ["-y", "@dooi/context101"]
+    }
+  }
+}
 ```
 
-Run the development server with:
+> Cursor tip: you can place it in `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project).
 
-```bash
-pnpm dev
+## 🧠 Usage
+
+Once installed, just talk to your editor as usual:
+
+```txt
+Teach me React step-by-step by building a small project.
 ```
 
-## Contribution
+```txt
+I want to learn backend fundamentals with checkpoints and exercises.
+```
 
-> Have a look at [contribution docs](./contributing.md) for how to update any of the roadmaps
+Context101 will inject the course context so your editor AI can guide you cleanly and consistently.
 
-- Add content to roadmaps
-- Add new roadmaps
-- Suggest changes to existing roadmaps
-- Discuss ideas in issues
-- Spread the word
+## 📚 Courses
 
-## Thanks to all contributors ❤
+More coming — the idea is simple:
+**courses should live where you code.**
 
- <a href = "https://github.com/kamranahmedse/developer-roadmap/graphs/contributors">
-   <img src = "https://contrib.rocks/image?repo=kamranahmedse/developer-roadmap"/>
- </a>
 
-## License
+## 📄 License
 
-Have a look at the [license file](./license) for details
+MIT
