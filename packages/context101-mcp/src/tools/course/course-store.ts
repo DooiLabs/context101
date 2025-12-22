@@ -23,6 +23,7 @@ export type CourseProgress = {
   completedLessons: string[];
   updatedAt: string;
   quizResults: QuizResult[];
+  stepQuizRequired?: Record<string, boolean>;
 };
 
 type CourseStore = {
@@ -80,7 +81,10 @@ export async function clearCourseProgress(courseId: string) {
   return false;
 }
 
-export async function appendQuizResult(courseId: string | null, result: QuizResult) {
+export async function appendQuizResult(
+  courseId: string | null,
+  result: QuizResult,
+) {
   const store = await loadStore();
   if (!courseId) {
     store.unknownQuizResults.push(result);
@@ -102,7 +106,54 @@ export async function appendQuizResult(courseId: string | null, result: QuizResu
       completedLessons: [],
       updatedAt: new Date().toISOString(),
       quizResults: [result],
+      stepQuizRequired: {},
     };
   }
   await saveStore(store);
+}
+
+export async function setStepQuizRequired(
+  courseId: string,
+  stepId: string,
+  required: boolean,
+) {
+  const store = await loadStore();
+  const existing = store.courses[courseId];
+  if (existing) {
+    existing.stepQuizRequired = existing.stepQuizRequired ?? {};
+    existing.stepQuizRequired[stepId] = required;
+    existing.updatedAt = new Date().toISOString();
+    store.courses[courseId] = existing;
+  } else {
+    store.courses[courseId] = {
+      courseId,
+      currentLessonId: "",
+      currentStepId: "",
+      completedSteps: [],
+      completedLessons: [],
+      updatedAt: new Date().toISOString(),
+      quizResults: [],
+      stepQuizRequired: { [stepId]: required },
+    };
+  }
+  await saveStore(store);
+}
+
+export async function isStepQuizRequired(courseId: string, stepId: string) {
+  const store = await loadStore();
+  const progress = store.courses[courseId];
+  return Boolean(progress?.stepQuizRequired?.[stepId]);
+}
+
+export async function getLatestQuizResult(courseId: string, stepId: string) {
+  const store = await loadStore();
+  const progress = store.courses[courseId];
+  if (!progress?.quizResults?.length) return null;
+  for (let i = progress.quizResults.length - 1; i >= 0; i -= 1) {
+    const result = progress.quizResults[i];
+    if (result.stepId === stepId) {
+      return result;
+    }
+  }
+  return null;
 }

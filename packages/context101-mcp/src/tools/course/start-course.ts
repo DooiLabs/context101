@@ -1,7 +1,7 @@
 import { startCourseInputSchema } from "./schemas.js";
 import {
   ensureCourseSession,
-  fetchStepContent,
+  fetchStepContentAndTrack,
   loadCourseCatalog,
 } from "./course-content.js";
 import { buildIntroductionPrompt, wrapLessonContent } from "./prompt.js";
@@ -51,7 +51,11 @@ export const startCourseTool = {
       courseId: course.id,
       lessonId: step.lessonId,
       stepId: step.stepId,
-      content: await fetchStepContent(course.id, step.lessonId, step.stepId),
+      content: await fetchStepContentAndTrack(
+        course.id,
+        step.lessonId,
+        step.stepId,
+      ),
       courseTitle: course.title,
       includeIntro: true,
     });

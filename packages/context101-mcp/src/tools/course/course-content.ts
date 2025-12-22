@@ -3,7 +3,10 @@ import {
   appendQuizResult,
   clearCourseProgress,
   getCourseProgress,
+  getLatestQuizResult,
+  isStepQuizRequired,
   setCourseProgress,
+  setStepQuizRequired,
   type QuizResult,
 } from "./course-store.js";
 
@@ -122,6 +125,27 @@ export async function fetchStepContent(
   return response.data.content;
 }
 
+function detectQuizRequirement(content: string) {
+  const hasQuiz =
+    /(^|\n)#{1,6}\s*quiz\b/i.test(content) ||
+    /(^|\n)\s*quiz\s*:/i.test(content);
+  const hasAnswer =
+    /(^|\n)#{1,6}\s*answer\b/i.test(content) ||
+    /(^|\n)\s*answer\s*:/i.test(content);
+  return hasQuiz && hasAnswer;
+}
+
+export async function fetchStepContentAndTrack(
+  courseId: string,
+  lessonId: string,
+  stepId: string,
+) {
+  const content = await fetchStepContent(courseId, lessonId, stepId);
+  const quizRequired = detectQuizRequirement(content);
+  await setStepQuizRequired(courseId, stepId, quizRequired);
+  return content;
+}
+
 function buildLessonLastIndex(steps: CourseStep[]) {
   const lessonLastIndex: Record<string, number> = {};
   steps.forEach((step, index) => {
@@ -172,6 +196,7 @@ async function persistSession(courseId: string, session: CourseSession) {
   await setCourseProgress({
     ...base,
     quizResults: existing?.quizResults ?? [],
+    stepQuizRequired: existing?.stepQuizRequired ?? {},
   });
 }
 
@@ -243,4 +268,17 @@ export async function recordQuizResult(
   result: QuizResult,
 ) {
   await appendQuizResult(courseId, result);
+}
+
+export async function canAdvanceCourse(courseId: string, stepId: string) {
+  const quizRequired = await isStepQuizRequired(courseId, stepId);
+  if (!quizRequired) return { ok: true as const };
+  const latest = await getLatestQuizResult(courseId, stepId);
+  if (!latest) {
+    return { ok: false as const, reason: "missing" as const };
+  }
+  if (!latest.result.correct) {
+    return { ok: false as const, reason: "incorrect" as const };
+  }
+  return { ok: true as const };
 }
