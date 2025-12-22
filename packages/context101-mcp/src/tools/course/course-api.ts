@@ -90,6 +90,10 @@ function buildUrl(path: string) {
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+function encodePathParam(value: string) {
+  return encodeURIComponent(value);
+}
+
 async function requestJson<T>(input: string, init: RequestInit): Promise<T> {
   const response = await fetch(input, init);
   if (!response.ok) {
@@ -110,14 +114,17 @@ export async function listCourses(query?: string, limit = 20, offset = 0) {
 }
 
 export async function getCourse(courseId: string) {
-  return requestJson<CourseResponse>(buildUrl(`/api/courses/${courseId}`), {
-    method: "GET",
-  });
+  return requestJson<CourseResponse>(
+    buildUrl(`/api/courses/${encodePathParam(courseId)}`),
+    {
+      method: "GET",
+    },
+  );
 }
 
 export async function listLessons(courseId: string) {
   return requestJson<LessonListResponse>(
-    buildUrl(`/api/courses/${courseId}/lessons`),
+    buildUrl(`/api/courses/${encodePathParam(courseId)}/lessons`),
     {
       method: "GET",
     },
@@ -126,14 +133,18 @@ export async function listLessons(courseId: string) {
 
 export async function getLesson(courseId: string, lessonId: string) {
   return requestJson<LessonResponse>(
-    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}`),
+    buildUrl(
+      `/api/courses/${encodePathParam(courseId)}/lessons/${encodePathParam(lessonId)}`,
+    ),
     { method: "GET" },
   );
 }
 
 export async function listSteps(courseId: string, lessonId: string) {
   return requestJson<StepListResponse>(
-    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps`),
+    buildUrl(
+      `/api/courses/${encodePathParam(courseId)}/lessons/${encodePathParam(lessonId)}/steps`,
+    ),
     { method: "GET" },
   );
 }
@@ -144,7 +155,11 @@ export async function getStep(
   stepId: string,
 ) {
   return requestJson<StepDetailResponse>(
-    buildUrl(`/api/courses/${courseId}/lessons/${lessonId}/steps/${stepId}`),
+    buildUrl(
+      `/api/courses/${encodePathParam(courseId)}/lessons/${encodePathParam(
+        lessonId,
+      )}/steps/${encodePathParam(stepId)}`,
+    ),
     { method: "GET" },
   );
 }
@@ -155,7 +170,9 @@ export async function searchCourseSteps(
   limit = 10,
   offset = 0,
 ) {
-  const url = new URL(buildUrl(`/api/courses/${courseId}/steps/search`));
+  const url = new URL(
+    buildUrl(`/api/courses/${encodePathParam(courseId)}/steps/search`),
+  );
   url.searchParams.set("query", query);
   url.searchParams.set("limit", String(limit));
   url.searchParams.set("offset", String(offset));
