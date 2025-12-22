@@ -1,58 +1,19 @@
-<p align="center">
-  <a href="https://roadmap.sh/"><img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/dc125163-b253-49f0-b6d2-5920c2bfc573" />
-</a>
-  <h2 align="center"><a href="https://roadmap.sh">Context101</a></h2>
-  <p align="center">Learn coding directly in your AI code editor<p>
-  <p align="center">
-    <a href="https://roadmap.sh/roadmaps">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Roadmaps%20-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="roadmaps" />
-    </a>
-    <a href="https://roadmap.sh/best-practices">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Best%20Practices-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="best practices" />
-    </a>
-    <a href="https://roadmap.sh/questions">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Questions-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="videos" />
-    </a>
-    <a href="https://www.youtube.com/channel/UCA0H2KIWgWTwpTFjSxp0now?sub_confirmation=1">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-YouTube%20Channel-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="roadmaps" />
-    </a>
-  </p>
-</p>
-<br>
-<img width="1722" height="1079" alt="Screenshot 2025-12-22 at 3 34 45 PM" src="https://github.com/user-attachments/assets/452e3579-ee7f-482a-ab67-7debf75ba925" />
+# ✍️ Context101
 
-![](https://i.imgur.com/waxVImv.png)
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=context7&config=eyJ1cmwiOiJodHRwczovL21jcC5jb250ZXh0Ny5jb20vbWNwIn0%3D) [<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/Install%20in%20VS%20Code-0098FF?style=for-the-badge&logo=visualstudiocode&logoColor=white">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22context7%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40upstash%2Fcontext7-mcp%40latest%22%5D%7D)
 
-The AI-native way to learn coding, powered by a MCP based course.
 
-### [View all Roadmaps](https://roadmap.sh) &nbsp;&middot;&nbsp; [Best Practices](https://roadmap.sh/best-practices) &nbsp;&middot;&nbsp; [Questions](https://roadmap.sh/questions)
+Learn coding inside your AI code editor. Context101 is the AI-native way to learn coding, powered by a MCP based course.
 
-![](https://i.imgur.com/waxVImv.png)
+<img
+  src="https://github.com/user-attachments/assets/58c60b9c-b963-4b96-8e99-75ff041454b9"
+  alt="Context101 Screenshot"
+  width="100%"
+/>
 
-# Context101 MCP — Learn Coding Inside Your AI Code Editor
+### 👩‍💻 How to learn with Context101
 
-Context101 is an **MCP server**.
-Add it to your AI code editor (Cursor / VS Code / Windsurf / Claude Code / etc.) and **learn coding without leaving your editor**.
-
-## ✅ What it does
-
-LLMs are great at explaining code, but learning gets messy since conversations aren't structured.
-
-Context101 solves that by delivering a structured course (steps, checkpoints, quizes) **directly into your editor’s AI chat** via MCP.
-
-* ✅ Learn-by-building, inside the editor
-* ✅ No tab switching
-* ✅ Structured guidance (step → code → feedback → next step)
-
-## 🛠 Installation
-
-### Requirements
-
-* Node.js >= 18
-* Any MCP client (Cursor, VS Code, Windsurf, Claude Code, etc.)
-
-### Cursor / Any MCP client (Local, via npx)
-
+**Step 1** Add context101 mcp server to your AI code editor (cursor/windsurf/antigravity/etc). 
 Add this to your MCP config:
 
 ```json
@@ -65,12 +26,7 @@ Add this to your MCP config:
   }
 }
 ```
-
-> Cursor tip: you can place it in `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project).
-
-## 🧠 Usage
-
-Once installed, just talk to your editor as usual:
+**Step 2** Once installed, just talk to your editor as usual:
 
 ```txt
 Teach me React step-by-step by building a small project.
@@ -82,12 +38,45 @@ I want to learn backend fundamentals with checkpoints and exercises.
 
 Context101 will inject the course context so your editor AI can guide you cleanly and consistently.
 
-## 📚 Courses
 
-More coming — the idea is simple:
-**courses should live where you code.**
+<img src="vscode/assets/demo.gif" width="520px" />
 
+### 📝 Languages supported
 
-## 📄 License
+- Python
+- JavaScript
+- TypeScript
+- JSX and TSX files
+- C and C++
+- PHP
+- Java
+- C#
+- Ruby
+- Rust
+- Dart
+- Go
+- 🚧 More under construction
 
-MIT
+### 📑 Docstring formats supported
+
+- JSDoc
+- reST
+- NumPy
+- DocBlock
+- Doxygen
+- Javadoc
+- GoDoc
+- XML
+- Google
+- 🚧 More under construction
+
+### 🚨 Disclaimer
+
+We never store your code, but your code does leave your machine.
+
+---
+
+### More information
+
+[Website](https://context101.org/)
+[Twitter](https://twitter.com/context101.org)
