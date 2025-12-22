@@ -16,20 +16,36 @@ export const searchCoursesInputSchema = z.object({
 });
 
 export const startCourseInputSchema = z.object({
-  courseId: z.string().min(1).describe("Course ID to start or resume."),
+  courseId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to start or resume. Defaults to --course."),
   resume: z.boolean().optional().default(true),
 });
 
 export const nextCourseStepInputSchema = z.object({
-  courseId: z.string().min(1).describe("Course ID to advance."),
+  courseId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to advance. Defaults to --course."),
 });
 
 export const getCourseStatusInputSchema = z.object({
-  courseId: z.string().min(1).describe("Course ID to get status for."),
+  courseId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to get status for. Defaults to --course."),
 });
 
 export const clearCourseProgressInputSchema = z.object({
-  courseId: z.string().min(1).describe("Course ID to clear progress for."),
+  courseId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to clear progress for. Defaults to --course."),
   confirm: z.boolean().optional().default(false),
 });
 

@@ -52,7 +52,7 @@ jobs:
         working-directory: packages/context101-mcp
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          if npm view @dooi/context101@"$PACKAGE_VERSION" version >/dev/null 2>&1; then
+          if npm view @context101/mcp@"$PACKAGE_VERSION" version >/dev/null 2>&1; then
             echo "Version ${PACKAGE_VERSION} is already published."
             exit 1
           fi

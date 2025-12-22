@@ -4,6 +4,7 @@ import {
   fetchStepContentAndTrack,
 } from "./course-content.js";
 import { wrapLessonContent } from "./prompt.js";
+import { resolveCourseId } from "../../config.js";
 
 function formatNextPayload(payload: {
   courseId: string;
@@ -24,26 +25,30 @@ export const nextCourseStepTool = {
   name: "nextCourseStep",
   description: "Advance to the next step in a course.",
   parameters: nextCourseStepInputSchema,
-  execute: async (args: { courseId: string }) => {
-    const result = await advanceCourseSession(args.courseId);
+  execute: async (args: { courseId?: string }) => {
+    const courseId = resolveCourseId(args.courseId);
+    if (!courseId) {
+      return "Pass courseId or start the server with --course <id>.";
+    }
+    const result = await advanceCourseSession(courseId);
     if (result.status === "missing") {
       return "No course progress found. Start the course first.";
     }
     if (result.status === "completed") {
-      return `Course "${args.courseId}" completed.`;
+      return `Course "${courseId}" completed.`;
     }
 
     const step = result.session.steps[result.session.index];
     if (!step) {
-      return `Course "${args.courseId}" has no next step.`;
+      return `Course "${courseId}" has no next step.`;
     }
 
     return formatNextPayload({
-      courseId: args.courseId,
+      courseId,
       lessonId: step.lessonId,
       stepId: step.stepId,
       content: await fetchStepContentAndTrack(
-        args.courseId,
+        courseId,
         step.lessonId,
         step.stepId,
       ),

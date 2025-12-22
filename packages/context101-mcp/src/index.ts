@@ -10,6 +10,7 @@ import {
   recordQuizResultTool,
 } from "./tools/course/index.js";
 import { getDocsTool } from "./tools/docs/get-docs.js";
+import { setDefaultCourseId } from "./config.js";
 
 const server = new FastMCP({
   name: "Context101",
@@ -27,6 +28,23 @@ const courseTools = [
   recordQuizResultTool,
   getDocsTool,
 ];
+
+function parseCourseArg(args: string[]) {
+  for (let index = 0; index < args.length; index += 1) {
+    const value = args[index];
+    if (!value) continue;
+    if (value === "--course") {
+      const next = args[index + 1];
+      if (next && !next.startsWith("--")) return next;
+    }
+    if (value.startsWith("--course=")) {
+      return value.slice("--course=".length);
+    }
+  }
+  return null;
+}
+
+setDefaultCourseId(parseCourseArg(process.argv.slice(2)));
 
 for (const tool of courseTools) {
   server.addTool({

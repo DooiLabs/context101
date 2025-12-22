@@ -5,6 +5,7 @@ import {
   loadCourseCatalog,
 } from "./course-content.js";
 import { buildIntroductionPrompt, wrapLessonContent } from "./prompt.js";
+import { resolveCourseId } from "../../config.js";
 
 function formatStartPayload(payload: {
   courseId: string;
@@ -31,20 +32,24 @@ export const startCourseTool = {
   name: "startCourse",
   description: "Start or resume a specific course by courseId.",
   parameters: startCourseInputSchema,
-  execute: async (args: { courseId: string; resume?: boolean }) => {
+  execute: async (args: { courseId?: string; resume?: boolean }) => {
+    const courseId = resolveCourseId(args.courseId);
+    if (!courseId) {
+      return "Pass courseId or start the server with --course <id>.";
+    }
     const catalog = await loadCourseCatalog(100);
-    const course = catalog.find((item) => item.id === args.courseId);
+    const course = catalog.find((item) => item.id === courseId);
     if (!course) {
-      return `Course "${args.courseId}" not found.`;
+      return `Course "${courseId}" not found.`;
     }
 
     const session = await ensureCourseSession(course.id, args.resume !== false);
     if (!session) {
-      return `Course "${args.courseId}" has no content.`;
+      return `Course "${courseId}" has no content.`;
     }
     const step = session.steps[session.index];
     if (!step) {
-      return `Course "${args.courseId}" has no content.`;
+      return `Course "${courseId}" has no content.`;
     }
 
     return formatStartPayload({

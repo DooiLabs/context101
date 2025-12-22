@@ -1,12 +1,17 @@
 import { getCourseStatusInputSchema } from "./schemas.js";
 import { getCourseSession } from "./course-content.js";
+import { resolveCourseId } from "../../config.js";
 
 export const getCourseStatusTool = {
   name: "getCourseStatus",
   description: "Get status for a course.",
   parameters: getCourseStatusInputSchema,
-  execute: async (args: { courseId: string }) => {
-    const session = await getCourseSession(args.courseId);
+  execute: async (args: { courseId?: string }) => {
+    const courseId = resolveCourseId(args.courseId);
+    if (!courseId) {
+      return "Pass courseId or start the server with --course <id>.";
+    }
+    const session = await getCourseSession(courseId);
     if (!session) {
       return "No course progress found. Start the course first.";
     }
@@ -20,7 +25,7 @@ export const getCourseStatusTool = {
     ).length;
 
     return [
-      `Course: ${args.courseId}`,
+      `Course: ${courseId}`,
       `Current lesson: ${currentStep.lessonId}`,
       `Current step: ${currentStep.stepId}`,
       `Completed steps: ${completedSteps}`,

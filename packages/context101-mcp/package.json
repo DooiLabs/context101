@@ -1,6 +1,6 @@
 {
-  "name": "@dooi/context101",
-  "version": "0.0.5",
+  "name": "@context101/mcp",
+  "version": "0.0.1",
   "description": "MCP server for Context101",
   "scripts": {
     "build": "tsc && chmod 755 dist/index.js",
