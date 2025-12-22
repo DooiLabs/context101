@@ -32,7 +32,7 @@ export const nextCourseStepTool = {
     }
     const result = await advanceCourseSession(courseId);
     if (result.status === "missing") {
-      return "No course progress found. Start the course first.";
+      return "No course progress found. Start with `startCourseLesson`.";
     }
     if (result.status === "completed") {
       return `Course "${courseId}" completed.`;

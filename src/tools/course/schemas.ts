@@ -25,16 +25,15 @@ const courseIdSchema = z.preprocess(
     .describe("Course ID to start or resume. Defaults to --course."),
 );
 
-export const startCourseInputSchema = z.object({
-  courseId: courseIdSchema,
-  resume: z.boolean().optional().default(true),
-});
-
 export const nextCourseStepInputSchema = z.object({
   courseId: courseIdSchema,
 });
 
 export const getCourseStatusInputSchema = z.object({
+  courseId: courseIdSchema,
+});
+
+export const getOverviewInputSchema = z.object({
   courseId: courseIdSchema,
 });
 
@@ -62,8 +61,18 @@ export const recordQuizResultInputSchema = z.object({
 });
 
 export const getDocsInputSchema = z.object({
-  id: z.string().min(1).describe("Context101-compatible library ID."),
+  courseId: courseIdSchema.describe("Context101-compatible library ID."),
   mode: z.enum(["code", "info"]).optional().default("code"),
   tokens: z.number().int().min(10000).max(100000).optional().default(10000),
   topic: z.string().optional(),
+});
+
+export const startCourseLessonInputSchema = z.object({
+  courseId: courseIdSchema,
+  lessonId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Lesson ID to start or review. Omit to resume the course."),
+  resume: z.boolean().optional().default(true),
 });

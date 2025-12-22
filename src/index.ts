@@ -4,9 +4,10 @@ import { FastMCP } from "fastmcp";
 import {
   clearCourseProgressTool,
   getCourseStatusTool,
+  getOverviewTool,
   nextCourseStepTool,
   searchCoursesTool,
-  startCourseTool,
+  startCourseLessonTool,
   recordQuizResultTool,
 } from "./tools/course/index.js";
 import { getDocsTool } from "./tools/docs/get-docs.js";
@@ -22,9 +23,10 @@ const server = new FastMCP({
 
 const courseTools = [
   searchCoursesTool,
-  startCourseTool,
+  startCourseLessonTool,
   nextCourseStepTool,
   getCourseStatusTool,
+  getOverviewTool,
   clearCourseProgressTool,
   recordQuizResultTool,
   getDocsTool,

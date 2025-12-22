@@ -17,7 +17,7 @@ export const clearCourseProgressTool = {
 
     const session = await getCourseSession(courseId);
     if (!session) {
-      return "No course progress found.";
+      return "No course progress found. Start with `startCourseLesson`.";
     }
     await clearCourseSession(courseId);
     return `Progress for course "${courseId}" cleared.`;

@@ -65,6 +65,11 @@ export async function getCourseProgress(courseId: string) {
   return store.courses[courseId] ?? null;
 }
 
+export async function getAllCourseProgress() {
+  const store = await loadStore();
+  return store.courses;
+}
+
 export async function setCourseProgress(progress: CourseProgress) {
   const store = await loadStore();
   store.courses[progress.courseId] = progress;

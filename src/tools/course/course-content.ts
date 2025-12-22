@@ -235,6 +235,20 @@ export async function getCourseSession(courseId: string) {
   return ensureCourseSession(courseId, true);
 }
 
+export async function moveCourseSessionToLesson(
+  courseId: string,
+  lessonId: string,
+) {
+  const session = await ensureCourseSession(courseId, true);
+  if (!session) return { status: "missing" as const };
+  const index = session.steps.findIndex((step) => step.lessonId === lessonId);
+  if (index === -1) return { status: "missing_lesson" as const };
+  session.index = index;
+  session.updatedAt = new Date().toISOString();
+  await persistSession(courseId, session);
+  return { status: "ok" as const, session };
+}
+
 export async function advanceCourseSession(courseId: string) {
   const session = courseSessions.get(courseId);
   if (!session) return { status: "missing" as const };
@@ -271,6 +285,7 @@ export async function recordQuizResult(
 }
 
 export async function canAdvanceCourse(courseId: string, stepId: string) {
+  // Intentionally not enforced by nextCourseStep; we track quiz state for UX hints only.
   const quizRequired = await isStepQuizRequired(courseId, stepId);
   if (!quizRequired) return { ok: true as const };
   const latest = await getLatestQuizResult(courseId, stepId);

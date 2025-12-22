@@ -1,16 +1,26 @@
 import { getDocsInputSchema } from "../course/schemas.js";
 import { fetchDocs } from "./docs-api.js";
+import { resolveCourseId } from "../../config.js";
 
 export const getDocsTool = {
   name: "getDocs",
   description: "Fetch documentation from Context101 docs proxy.",
   parameters: getDocsInputSchema,
   execute: async (args: {
-    id: string;
+    courseId?: string;
     mode?: "code" | "info";
     tokens?: number;
     topic?: string;
   }) => {
-    return fetchDocs(args);
+    const courseId = resolveCourseId(args.courseId);
+    if (!courseId) {
+      return "Pass courseId or start the server with --course <id>.";
+    }
+    return fetchDocs({
+      id: courseId,
+      mode: args.mode,
+      tokens: args.tokens,
+      topic: args.topic,
+    });
   },
 };
