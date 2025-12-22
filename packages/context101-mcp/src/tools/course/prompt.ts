@@ -35,7 +35,7 @@ use the \`getCourseStatus\` tool to retrieve it.
 
 If the step content includes a quiz and an answer, ask the quiz from the content and wait for the user's response.
 Grade the answer using the provided answer in the content, then call \`recordQuizResult\` with the stepId, question,
-correct answer, user answer, and grading result. If the answer is incorrect, ask them to try again and do not move on.
+correct answer, user answer, and grading result. If the answer is incorrect, ask them to try again before moving on.
 Do not reveal the correct answer or the user's answer in the chat. The answer should only appear inside the
 \`recordQuizResult\` tool call payload.
 

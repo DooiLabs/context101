@@ -1,9 +1,7 @@
 import { nextCourseStepInputSchema } from "./schemas.js";
 import {
   advanceCourseSession,
-  canAdvanceCourse,
   fetchStepContentAndTrack,
-  getCourseSession,
 } from "./course-content.js";
 import { wrapLessonContent } from "./prompt.js";
 
@@ -27,21 +25,6 @@ export const nextCourseStepTool = {
   description: "Advance to the next step in a course.",
   parameters: nextCourseStepInputSchema,
   execute: async (args: { courseId: string }) => {
-    const session = await getCourseSession(args.courseId);
-    if (!session) {
-      return "No course progress found. Start the course first.";
-    }
-
-    const currentStep = session.steps[session.index];
-    if (currentStep) {
-      const gate = await canAdvanceCourse(args.courseId, currentStep.stepId);
-      if (!gate.ok) {
-        return gate.reason === "incorrect"
-          ? "Quiz answer is incorrect. Please try again before moving on."
-          : "Quiz answer required. Please answer the quiz before moving on.";
-      }
-    }
-
     const result = await advanceCourseSession(args.courseId);
     if (result.status === "missing") {
       return "No course progress found. Start the course first.";
