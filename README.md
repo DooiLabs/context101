@@ -1,5 +1,6 @@
 <p align="center">
-  <a href="https://roadmap.sh/"><img src="public/img/brand.png" height="128"></a>
+  <a href="https://roadmap.sh/"><img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/dc125163-b253-49f0-b6d2-5920c2bfc573" />
+</a>
   <h2 align="center"><a href="https://roadmap.sh">Context101</a></h2>
   <p align="center">Learn any framework in a hour - directly in your IDE<p>
   <p align="center">
@@ -18,8 +19,7 @@
   </p>
 </p>
 <br>
-<img width="4064" height="2586" alt="image" src="https://github.com/user-attachments/assets/781aed7f-4838-48dc-b5ac-98ec1065c477" />
-
+<img width="1722" height="1079" alt="Screenshot 2025-12-22 at 3 34 45 PM" src="https://github.com/user-attachments/assets/452e3579-ee7f-482a-ab67-7debf75ba925" />
 
 ![](https://i.imgur.com/waxVImv.png)
 
