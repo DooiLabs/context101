@@ -12,10 +12,10 @@ import {
 import { getDocsTool } from "./tools/docs/get-docs.js";
 
 const server = new FastMCP({
-  name: "Context7",
+  name: "Context101",
   version: "1.0.13",
   instructions:
-    "Use this server to retrieve up-to-date documentation and code examples for any library.",
+    "Use this server to access Context101 courses and documentation.",
 });
 
 const courseTools = [
@@ -39,7 +39,7 @@ for (const tool of courseTools) {
 
 async function main() {
   server.start({ transportType: "stdio" });
-  console.error("Context7 Documentation MCP Server running on stdio");
+  console.error("context101 course mcp server running on stdio");
 }
 
 main().catch((error) => {

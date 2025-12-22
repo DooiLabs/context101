@@ -46,7 +46,7 @@ export const recordQuizResultInputSchema = z.object({
 });
 
 export const getDocsInputSchema = z.object({
-  id: z.string().min(1).describe("Context7-compatible library ID."),
+  id: z.string().min(1).describe("Context101-compatible library ID."),
   mode: z.enum(["code", "info"]).optional().default("code"),
   tokens: z.number().int().min(10000).max(100000).optional().default(10000),
   topic: z.string().optional(),

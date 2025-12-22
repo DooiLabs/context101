@@ -8,7 +8,7 @@ type CourseListResponse = {
     status: string;
     updatedAt: string;
     sourceLibraryId?: string | null;
-    sourceContext7Url?: string | null;
+    sourceContext101Url?: string | null;
     sourceLlmsUrl?: string | null;
     generatorModel?: string | null;
     generatedAt?: string | null;

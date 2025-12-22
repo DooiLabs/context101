@@ -1,6 +1,6 @@
 {
   "name": "@dooi/context101",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MCP server for Context101",
   "scripts": {
     "build": "tsc && chmod 755 dist/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/upstash/context7.git",
+    "url": "git+https://github.com/DooiLabs/context101.git",
     "directory": "packages/context101-mcp"
   },
   "license": "MIT",
