@@ -36,6 +36,27 @@ jobs:
         working-directory: packages/context101-mcp
         run: pnpm build
 
+      - name: Verify tag matches package version
+        working-directory: packages/context101-mcp
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_NAME="${GITHUB_REF_NAME}"
+          EXPECTED_TAG="v${PACKAGE_VERSION}"
+          if [ "$TAG_NAME" != "$PACKAGE_VERSION" ] && [ "$TAG_NAME" != "$EXPECTED_TAG" ]; then
+            echo "Tag ${TAG_NAME} does not match package.json version ${PACKAGE_VERSION}."
+            echo "Use tag ${PACKAGE_VERSION} or ${EXPECTED_TAG}."
+            exit 1
+          fi
+
+      - name: Verify version not published
+        working-directory: packages/context101-mcp
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if npm view @dooi/context101@"$PACKAGE_VERSION" version >/dev/null 2>&1; then
+            echo "Version ${PACKAGE_VERSION} is already published."
+            exit 1
+          fi
+
       - name: Publish
         working-directory: packages/context101-mcp
         run: npm publish --access public
