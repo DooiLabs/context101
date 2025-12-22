@@ -55,8 +55,13 @@ export const searchCoursesTool = {
   name: "searchCourses",
   description: "Search available courses by query.",
   parameters: searchCoursesInputSchema,
-  execute: async (args: { query: string; limit?: number }) => {
-    const results = await searchCourses(args.query, args.limit ?? 10);
+  execute: async (args: { query?: string; limit?: number }) => {
+    const normalized = (args.query ?? "").trim();
+    if (!normalized) {
+      const catalog = await loadCourseCatalog(args.limit ?? 10);
+      return formatCourseList(catalog);
+    }
+    const results = await searchCourses(normalized, args.limit ?? 10);
     return formatCourseList(results);
   },
 };

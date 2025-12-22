@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 export const searchCoursesInputSchema = z.object({
-  query: z.string().min(1).describe("Search query to find courses."),
+  query: z
+    .string()
+    .optional()
+    .default("")
+    .describe("Search query to find courses."),
   limit: z.number().int().min(1).max(50).optional().default(10),
 });
 

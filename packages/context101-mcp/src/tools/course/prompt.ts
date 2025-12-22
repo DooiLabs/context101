@@ -14,6 +14,7 @@ Thank you for registering for the ${courseTitle} course! This interactive guide 
 - You can ask questions at any time
 - If you ever leave and come back, use the \`startCourse\` tool to pick up where you left off. Just ask to "start the ${courseId} course".
 - Use the \`nextCourseStep\` tool to move to the next step when you're ready. Just ask to "move to the next step" when you are ready.
+- Use the \`searchCourses\` tool to list or search courses. Passing an empty or whitespace query returns the full list.
 - Use the \`getCourseStatus\` tool to check your progress. You can just ask "get my course progress".
 - Use the \`clearCourseProgress\` tool to reset your progress and start over. You can just ask "clear my course progress".
 
