@@ -103,9 +103,18 @@ async function requestJson<T>(input: string, init: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export async function listCourses(query?: string, limit = 20, offset = 0) {
+export async function listCourses(params?: {
+  query?: string;
+  tag?: string;
+  status?: "active" | "draft" | "archived";
+  limit?: number;
+  offset?: number;
+}) {
+  const { query, tag, status, limit = 20, offset = 0 } = params ?? {};
   const url = new URL(buildUrl("/api/courses"));
   if (query) url.searchParams.set("query", query);
+  if (tag) url.searchParams.set("tag", tag);
+  if (status) url.searchParams.set("status", status);
   const safeLimit = Math.min(Math.max(limit, 1), 100);
   const safeOffset = Math.max(offset, 0);
   url.searchParams.set("limit", String(safeLimit));

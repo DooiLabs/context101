@@ -92,7 +92,7 @@ export async function buildCourseContent(
 }
 
 export async function loadCourseCatalog(limit: number) {
-  const response = await listCourses(undefined, limit, 0);
+  const response = await listCourses({ limit, offset: 0 });
   return response.data.map((course) => ({
     id: course.id,
     title: course.title,

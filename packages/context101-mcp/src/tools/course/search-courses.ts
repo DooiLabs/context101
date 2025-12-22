@@ -1,24 +1,42 @@
 import { searchCoursesInputSchema } from "./schemas.js";
-import { loadCourseCatalog, CourseMeta } from "./course-content.js";
+import { listCourses } from "./course-api.js";
+import { CourseMeta } from "./course-content.js";
 
-function scoreCourse(query: string, course: CourseMeta) {
-  const q = query.toLowerCase();
-  let score = 0;
-  if (course.id.toLowerCase().includes(q)) score += 3;
-  if (course.title.toLowerCase().includes(q)) score += 4;
-  if (course.description.toLowerCase().includes(q)) score += 2;
-  if (course.tags.some((tag) => tag.toLowerCase().includes(q))) score += 2;
-  return score;
-}
-
-async function searchCourses(query: string, limit: number) {
-  const catalog = await loadCourseCatalog(100);
-  return catalog
-    .map((course) => ({ course, score: scoreCourse(query, course) }))
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((item) => item.course);
+async function searchCourses(params: {
+  query?: string;
+  tag?: string;
+  status?: "active" | "draft" | "archived";
+  limit: number;
+  offset: number;
+}) {
+  const response = await listCourses({
+    query: params.query,
+    tag: params.tag,
+    status: params.status,
+    limit: params.limit,
+    offset: params.offset,
+  });
+  return response.data.map((course) => ({
+    id: course.id,
+    title: course.title,
+    description: course.description ?? "",
+    tags: course.tags ?? [],
+    source: "context101",
+    version: course.version ?? undefined,
+    updatedAt: course.updatedAt,
+    status:
+      course.status === "draft" || course.status === "archived"
+        ? course.status
+        : "active",
+    overview: course.overview
+      ? {
+          lessons: course.overview.lessons ?? [],
+          lessonIds: course.overview.lessonIds ?? [],
+          stepCounts: course.overview.stepCounts ?? [],
+          totalSteps: course.overview.totalSteps ?? undefined,
+        }
+      : undefined,
+  })) satisfies CourseMeta[];
 }
 
 function formatCourseOverview(
@@ -55,13 +73,21 @@ export const searchCoursesTool = {
   name: "searchCourses",
   description: "Search available courses by query.",
   parameters: searchCoursesInputSchema,
-  execute: async (args: { query?: string; limit?: number }) => {
+  execute: async (args: {
+    query?: string;
+    tag?: string;
+    status?: "active" | "draft" | "archived";
+    limit?: number;
+    offset?: number;
+  }) => {
     const normalized = (args.query ?? "").trim();
-    if (!normalized) {
-      const catalog = await loadCourseCatalog(args.limit ?? 10);
-      return formatCourseList(catalog);
-    }
-    const results = await searchCourses(normalized, args.limit ?? 10);
+    const results = await searchCourses({
+      query: normalized || undefined,
+      tag: args.tag,
+      status: args.status,
+      limit: args.limit ?? 10,
+      offset: args.offset ?? 0,
+    });
     return formatCourseList(results);
   },
 };

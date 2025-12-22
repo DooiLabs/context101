@@ -6,6 +6,12 @@ export const searchCoursesInputSchema = z.object({
     .optional()
     .default("")
     .describe("Search query to find courses."),
+  tag: z.string().optional().describe("Filter by tag."),
+  status: z
+    .enum(["active", "draft", "archived"])
+    .optional()
+    .describe("Filter by status."),
+  offset: z.number().int().min(0).optional().default(0),
   limit: z.number().int().min(1).max(50).optional().default(10),
 });
 
