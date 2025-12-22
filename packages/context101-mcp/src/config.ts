@@ -5,6 +5,10 @@ export function setDefaultCourseId(value: string | null) {
   defaultCourseId = normalized ? normalized : null;
 }
 
+export function getDefaultCourseId() {
+  return defaultCourseId;
+}
+
 export function resolveCourseId(value?: string | null) {
   const normalized = value?.trim();
   if (defaultCourseId) return defaultCourseId;

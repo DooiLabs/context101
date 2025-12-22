@@ -1,26 +1,49 @@
+import { getDefaultCourseId } from "../../config.js";
+
+const courseSearchLines = [
+  "- If the user asks what courses are available, call the `searchCourses` tool with an empty query to return the full list.",
+  "- Use the `searchCourses` tool to search courses by query. Passing an empty or whitespace query returns the full list.",
+];
+
+function buildCourseRestrictionLine(courseId: string) {
+  if (!getDefaultCourseId()) return null;
+  return `- This MCP server is locked to the ${courseId} course. Do not search for or switch to other courses.`;
+}
+
 export function buildIntroductionPrompt(courseTitle: string, courseId: string) {
-  return `
-This is a course to help a new user learn about ${courseTitle}.
-The following is the introduction content, please provide this text to the user EXACTLY as written below. Do not provide any other text or instructions:
+  const restrictionLine = buildCourseRestrictionLine(courseId);
+  const lines = [
+    `This is a course to help a new user learn about ${courseTitle}.`,
+    "The following is the introduction content, please provide this text to the user EXACTLY as written below. Do not provide any other text or instructions:",
+    "",
+    `# Welcome to the ${courseTitle} Course!`,
+    "",
+    `Thank you for registering for the ${courseTitle} course! This interactive guide will help you learn the material step by step.`,
+    "",
+    "## How This Course Works",
+    "",
+    "- Each lesson is broken into multiple steps",
+    "- I'll guide you through the code examples and explanations",
+    "- You can ask questions at any time",
+    `- If you ever leave and come back, use the \`startCourse\` tool to pick up where you left off. Just ask to "start the ${courseId} course".`,
+    '- Use the `nextCourseStep` tool to move to the next step when you\'re ready. Just ask to "move to the next step" when you are ready.',
+  ];
 
-# Welcome to the ${courseTitle} Course!
+  if (!getDefaultCourseId()) {
+    lines.push(...courseSearchLines);
+  }
+  if (restrictionLine) {
+    lines.push(restrictionLine);
+  }
 
-Thank you for registering for the ${courseTitle} course! This interactive guide will help you learn the material step by step.
+  lines.push(
+    "- Use the `getCourseStatus` tool to check your progress. You can just ask \"get my course progress\".",
+    "- Use the `clearCourseProgress` tool to reset your progress and start over. You can just ask \"clear my course progress\".",
+    "",
+    `Type "start ${courseId} course" and let's get started with your first lesson!`,
+  );
 
-## How This Course Works
-
-- Each lesson is broken into multiple steps
-- I'll guide you through the code examples and explanations
-- You can ask questions at any time
-- If you ever leave and come back, use the \`startCourse\` tool to pick up where you left off. Just ask to "start the ${courseId} course".
-- Use the \`nextCourseStep\` tool to move to the next step when you're ready. Just ask to "move to the next step" when you are ready.
-- If the user asks what courses are available, call the \`searchCourses\` tool with an empty query to return the full list.
-- Use the \`searchCourses\` tool to search courses by query. Passing an empty or whitespace query returns the full list.
-- Use the \`getCourseStatus\` tool to check your progress. You can just ask "get my course progress".
-- Use the \`clearCourseProgress\` tool to reset your progress and start over. You can just ask "clear my course progress".
-
-Type "start ${courseId} course" and let's get started with your first lesson!
-`;
+  return `\n${lines.join("\n")}\n`;
 }
 
 const lessonPrompt = `
@@ -32,7 +55,18 @@ to move to the next step when they are ready. If the step contains instructions 
 for the user when possible. You should always briefly explain the step before writing the code. Please ensure to
 return any text in markdown blockquotes exactly as written in your response. When the user ask about their course progress or course status,
 use the \`getCourseStatus\` tool to retrieve it.
+`;
 
+const courseSearchPrompt = `
+If the user asks what courses are available, call the \`searchCourses\` tool with an empty query to return the full list.
+Use the \`searchCourses\` tool to search courses by query. Passing an empty or whitespace query returns the full list.
+`;
+
+const courseRestrictionPrompt = `
+This MCP server is locked to a single course. Do not search for or switch to other courses.
+`;
+
+const quizPrompt = `
 Only use a quiz if the step content explicitly includes a quiz and an answer. Do not invent or add a quiz when the
 content does not contain one; in that case, proceed normally to the next step when the user is ready.
 If a quiz and answer are present, ask the quiz from the content and wait for the user's response. Grade the answer
@@ -45,5 +79,12 @@ When the user asks for library or framework details, call the \`getDocs\` tool f
 `;
 
 export function wrapLessonContent(content: string) {
-  return `${lessonPrompt}\n\nHere is the content for this step: <StepContent>${content}</StepContent>\n\nWhen you're ready to continue, use the \`nextCourseStep\` tool to move to the next step.`;
+  const promptParts = [lessonPrompt];
+  if (getDefaultCourseId()) {
+    promptParts.push(courseRestrictionPrompt);
+  } else {
+    promptParts.push(courseSearchPrompt);
+  }
+  promptParts.push(quizPrompt);
+  return `${promptParts.join("\n")}\n\nHere is the content for this step: <StepContent>${content}</StepContent>\n\nWhen you're ready to continue, use the \`nextCourseStep\` tool to move to the next step.`;
 }

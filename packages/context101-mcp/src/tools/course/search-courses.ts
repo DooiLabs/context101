@@ -1,6 +1,7 @@
 import { searchCoursesInputSchema } from "./schemas.js";
 import { listCourses } from "./course-api.js";
 import { CourseMeta } from "./course-content.js";
+import { getDefaultCourseId } from "../../config.js";
 
 async function searchCourses(params: {
   query?: string;
@@ -80,6 +81,9 @@ export const searchCoursesTool = {
     limit?: number;
     offset?: number;
   }) => {
+    if (getDefaultCourseId()) {
+      return "Course search is disabled when the server is locked to a single course.";
+    }
     const normalized = (args.query ?? "").trim();
     const results = await searchCourses({
       query: normalized || undefined,
