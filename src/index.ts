@@ -10,7 +10,8 @@ import {
   recordQuizResultTool,
 } from "./tools/course/index.js";
 import { getDocsTool } from "./tools/docs/get-docs.js";
-import { setDefaultCourseId } from "./config.js";
+import { getDefaultCourseId, setDefaultCourseId } from "./config.js";
+import { getCourse } from "./tools/course/course-api.js";
 
 const server = new FastMCP({
   name: "Context101",
@@ -56,6 +57,19 @@ for (const tool of courseTools) {
 }
 
 async function main() {
+  const defaultCourseId = getDefaultCourseId();
+  if (defaultCourseId) {
+    try {
+      await getCourse(defaultCourseId);
+    } catch (error) {
+      console.error(
+        `Invalid --course "${defaultCourseId}". Server will not start.`,
+      );
+      console.error(error);
+      process.exit(1);
+    }
+  }
+
   server.start({ transportType: "stdio" });
   console.error("context101 course mcp server running on stdio");
 }
