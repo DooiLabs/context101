@@ -1,59 +1,58 @@
+# Context101
+
+<img width="3000" height="1000" alt="image" src="https://github.com/user-attachments/assets/0c5cf1f1-1339-4477-81b1-625d6755e2fe" />
+
 <p align="center">
-  <a href="https://roadmap.sh/"><img width="32" height="32" alt="image" src="https://github.com/user-attachments/assets/dc125163-b253-49f0-b6d2-5920c2bfc573" />
-</a>
-  <h2 align="center"><a href="https://roadmap.sh">Context101</a></h2>
-  <p align="center">Learn coding inside your AI code editor<p>
-  <p align="center">
-    <a href="https://roadmap.sh/roadmaps">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Roadmaps%20-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="roadmaps" />
-    </a>
-    <a href="https://roadmap.sh/best-practices">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Best%20Practices-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="best practices" />
-    </a>
-    <a href="https://roadmap.sh/questions">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Questions-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="videos" />
-    </a>
-    <a href="https://www.youtube.com/channel/UCA0H2KIWgWTwpTFjSxp0now?sub_confirmation=1">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-YouTube%20Channel-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="roadmaps" />
-    </a>
-  </p>
+  <strong>Context101</strong>
 </p>
-<br>
-<img width="1722" height="1079" alt="Screenshot 2025-12-22 at 3 34 45 PM" src="https://github.com/user-attachments/assets/452e3579-ee7f-482a-ab67-7debf75ba925" />
 
-![](https://i.imgur.com/waxVImv.png)
+<p align="center">
+  <a href="https://pypi.org/project/fastapps/"><img src="https://img.shields.io/pypi/v/fastapps.svg" alt="PyPI"></a>
+  <a href="https://pypi.org/project/fastapps/"><img src="https://img.shields.io/pypi/pyversions/fastapps.svg" alt="Python"></a>
+  <a href="https://pepy.tech/projects/fastapps"><img src="https://static.pepy.tech/personalized-badge/fastapps?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=GREEN&left_text=downloads" alt="PyPI Downloads"></a>
+  <a href="https://github.com/DooiLabs/FastApps/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <br>
+  <a href="https://github.com/DooiLabs/FastApps/actions"><img src="https://github.com/DooiLabs/FastApps/workflows/CI/badge.svg" alt="CI Status"></a>
+  <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black"></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
+  <a href="https://github.com/DooiLabs/FastApps"><img src="https://img.shields.io/github/stars/DooiLabs/FastApps?style=social" alt="GitHub Stars"></a>
+</p>
 
-The AI-native way to learn coding, powered by a MCP based course.
+---
 
-### [View all Roadmaps](https://roadmap.sh) &nbsp;&middot;&nbsp; [Best Practices](https://roadmap.sh/best-practices) &nbsp;&middot;&nbsp; [Questions](https://roadmap.sh/questions)
+📚 **Documentation**: [https://context101.org/](https://contexet101.org/)
 
-![](https://i.imgur.com/waxVImv.png)
+👥 **Community**: [Join Our Discord](https://discord.gg/5cEy3Jqek3)
 
-# Context101 MCP — Learn Coding Inside Your AI Code Editor
+---
+> Context101 is an MCP server that works inside your AI code editor.
 
-Context101 is an **MCP server**.
-Add it to your AI code editor (Cursor / VS Code / Windsurf / Claude Code / etc.) and **learn coding without leaving your editor**.
+🤖 **Structured learning, powered by MCP** — Context101 turns casual AI conversations into step-by-step structured courses. Instead of fragmented answers, every interaction becomes a clear learning path with defined stages and goals.
 
-## ✅ What it does
+💬 **AI-native courses inside your editor** — Learn by building with AI. Whether you’re using Cursor or another AI code editor, Context101 guides you through real projects (like building a website) while teaching *how to learn and work with AI* in the AI era.
 
-LLMs are great at explaining code, but learning gets messy since conversations aren't structured.
+🧠 **Personalized learning roadmap** — Context101 remembers your questions, struggles, and progress. By asking the right follow-up questions as you learn, it continuously refines a roadmap tailored just for you—so your learning adapts as you do.
 
-Context101 solves that by delivering a structured course (steps, checkpoints, quizes) **directly into your editor’s AI chat** via MCP.
 
-* ✅ Learn-by-building, inside the editor
-* ✅ No tab switching
-* ✅ Structured guidance (step → code → feedback → next step)
+Have fun learning with Context101!
 
-## 🛠 Installation
 
-### Requirements
 
-* Node.js >= 18
-* Any MCP client (Cursor, VS Code, Windsurf, Claude Code, etc.)
+## Quick Start
 
-### Cursor / Any MCP client (Local, via npx)
+#### Method 1: CLI Installation (Recommended)
 
-Add this to your MCP config:
+One command to install and configure MCP for your IDE:
+
+```bash
+npx @context101/mcp
+```
+
+Supported clients: cursor, windsurf, cline, claude
+
+#### Method 2: Manual Configuration
+
+If you prefer manual setup, add this to your IDE's MCP config file:
 
 ```json
 {
@@ -66,28 +65,41 @@ Add this to your MCP config:
 }
 ```
 
-> Cursor tip: you can place it in `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project).
 
-## 🧠 Usage
+> Config file locations:
+
+- Cursor: ~/.cursor/mcp.json
+- Windsurf: ~/.codeium/windsurf/mcp_config.json
+- Cline: ~/.cline/mcp_config.json
+- Claude: ~/.claude/mcp_config.json
 
 Once installed, just talk to your editor as usual:
 
 ```txt
 Teach me React step-by-step by building a small project.
 ```
+That's it! Now your AI code editor would act like a tutor, with structured courses.
 
-```txt
-I want to learn backend fundamentals with checkpoints and exercises.
-```
+<img width="1721" height="1056" alt="Screenshot 2025-12-23 at 11 33 42 AM" src="https://github.com/user-attachments/assets/606837f1-dfbb-4aaf-857d-efcf860e2031" />
 
-Context101 will inject the course context so your editor AI can guide you cleanly and consistently.
-
-## 📚 Courses
-
-More coming — the idea is simple:
-**courses should live where you code.**
+## Highlights
 
 
-## 📄 License
+### Start: start the course with a natural conversation
+<img width="100%" alt="Screenshot 2025-12-23 at 12 28 14 PM" src="https://github.com/user-attachments/assets/fd2b080f-a085-4d3c-b28f-f298d240d28b" />
 
-MIT
+
+### Quizes : learn with personalized quizes that Context101 provides
+
+<img width="100%" alt="Screenshot 2025-12-23 at 12 29 31 PM" src="https://github.com/user-attachments/assets/1bafd3db-fb5a-4523-98df-a066af0c8dbd" />
+
+### Build : code directly in your code editor, Context101 will help your way through
+
+<img width="100%" alt="Screenshot 2025-12-23 at 12 30 01 PM" src="https://github.com/user-attachments/assets/f3e261ab-52ac-4d0c-861a-2dec43608800" />
+
+## Courses
+
+- **NextJS**: [https://pypi.org/project/fastapps/](https://context101.org/details/rust-lang/rust/)
+- **React**: [https://www.npmjs.com/package/fastapps](https://context101.org/details/rust-lang/rust/)
+- **MCP**: [https://modelcontextprotocol.io/](https://context101.org/details/rust-lang/rust/)
+- **The modern software developer**: [https://github.com/FastAppsOrg/FastApps](https://context101.org/details/rust-lang/rust/)
