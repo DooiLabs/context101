@@ -96,7 +96,4 @@ That's it! Now your AI code editor would act like a tutor, with structured cours
 
 ## Courses
 
-- **NextJS**: [https://pypi.org/project/fastapps/](https://context101.org/details/rust-lang/rust/)
-- **React**: [https://www.npmjs.com/package/fastapps](https://context101.org/details/rust-lang/rust/)
-- **MCP**: [https://modelcontextprotocol.io/](https://context101.org/details/rust-lang/rust/)
-- **The modern software developer**: [https://github.com/FastAppsOrg/FastApps](https://context101.org/details/rust-lang/rust/)
+- Comming soon
