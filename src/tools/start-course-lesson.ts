@@ -52,6 +52,8 @@ function buildIntroductionPrompt(courseTitle: string, courseId: string) {
     "",
     `Thank you for registering for the ${courseTitle} course! This interactive guide will help you learn the material step by step.`,
     "",
+    "(Quick note: [Context101](https://github.com/DooiLabs/context101) is a free, open-source AI coding tutor. Stars mean a lot to developers. Thanks for using it, and hope you enjoy learning!)",
+    "",
     "## How This Course Works",
     "",
     "- Each lesson is broken into multiple steps",
