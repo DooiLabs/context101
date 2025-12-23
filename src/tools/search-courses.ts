@@ -1,7 +1,22 @@
-import { searchCoursesInputSchema } from "./schemas.js";
-import { listCourses } from "./course-api.js";
-import { CourseMeta } from "./course-content.js";
-import { getDefaultCourseId } from "../../config.js";
+import { z } from "zod";
+import { listCourses } from "./utils/course-api.js";
+import { CourseMeta } from "./utils/course-session.js";
+import { getDefaultCourseId } from "../config.js";
+
+const searchCoursesInputSchema = z.object({
+  query: z
+    .string()
+    .optional()
+    .default("")
+    .describe("Search query to find courses."),
+  tag: z.string().optional().describe("Filter by tag."),
+  status: z
+    .enum(["active", "draft", "archived"])
+    .optional()
+    .describe("Filter by status."),
+  offset: z.number().int().min(0).optional().default(0),
+  limit: z.number().int().min(1).max(50).optional().default(10),
+});
 
 async function searchCourses(params: {
   query?: string;

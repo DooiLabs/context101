@@ -1,4 +1,36 @@
-import { getDefaultCourseId } from "../../config.js";
+import { z } from "zod";
+import {
+  fetchLessonContent,
+  ensureCourseSession,
+  syncSessionToStep,
+  trackStepQuizRequirement,
+} from "./utils/course-session.js";
+import { getDefaultCourseId, resolveCourseId } from "../config.js";
+
+const courseIdSchema = z.preprocess(
+  (value) =>
+    typeof value === "string" && value.trim().length === 0 ? undefined : value,
+  z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to start or resume. Defaults to --course."),
+);
+
+const startCourseLessonInputSchema = z.object({
+  courseId: courseIdSchema,
+  lessonId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Lesson ID to start or review. Omit to resume the course."),
+  stepId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Step ID to resume directly within a lesson."),
+  resume: z.boolean().optional().default(true),
+});
 
 const courseSearchLines = [
   "- If the user asks what courses are available, call the `searchCourses` tool with an empty query to return the full list.",
@@ -10,7 +42,7 @@ function buildCourseRestrictionLine(courseId: string) {
   return `- This MCP server is locked to the ${courseId} course. Do not search for or switch to other courses.`;
 }
 
-export function buildIntroductionPrompt(courseTitle: string, courseId: string) {
+function buildIntroductionPrompt(courseTitle: string, courseId: string) {
   const restrictionLine = buildCourseRestrictionLine(courseId);
   const lines = [
     `This is a course to help a new user learn about ${courseTitle}.`,
@@ -78,7 +110,7 @@ Do not reveal the correct answer or the user's answer in the chat. The answer sh
 When the user asks for library or framework details, call the \`getDocs\` tool first and answer using its response.
 `;
 
-export function wrapLessonContent(content: string) {
+function wrapLessonContent(content: string) {
   const promptParts = [lessonPrompt];
   if (getDefaultCourseId()) {
     promptParts.push(courseRestrictionPrompt);
@@ -88,3 +120,107 @@ export function wrapLessonContent(content: string) {
   promptParts.push(quizPrompt);
   return `${promptParts.join("\n")}\n\nHere is the content for this step: <StepContent>${content}</StepContent>\n\nWhen you're ready to continue, use the \`nextCourseStep\` tool to move to the next step.`;
 }
+
+function formatLessonPayload(payload: {
+  courseId: string;
+  lessonId: string;
+  stepId: string;
+  content: string;
+  includeIntro?: boolean;
+  courseTitle?: string;
+}) {
+  const intro =
+    payload.includeIntro && payload.courseTitle
+      ? `${buildIntroductionPrompt(payload.courseTitle, payload.courseId)}\n\n`
+      : "";
+  return [
+    `Course: ${payload.courseId}`,
+    `Lesson: ${payload.lessonId}`,
+    `Step: ${payload.stepId}`,
+    "",
+    `${intro}${wrapLessonContent(payload.content)}`,
+  ].join("\n");
+}
+
+export const startCourseLessonTool = {
+  name: "startCourseLesson",
+  description:
+    "Start or resume a course. Optionally jump to a specific lesson by lessonId.",
+  parameters: startCourseLessonInputSchema,
+  execute: async (args: {
+    courseId?: string;
+    lessonId?: string;
+    stepId?: string;
+    resume?: boolean;
+  }) => {
+    const courseId = resolveCourseId(args.courseId);
+    if (!courseId) {
+      return "Pass courseId or start the server with --course <id>.";
+    }
+
+    if (args.stepId) {
+      const response = await fetchLessonContent({
+        courseId,
+        stepId: args.stepId,
+        lessonId: args.lessonId,
+      });
+      await syncSessionToStep(courseId, response.stepId);
+      await trackStepQuizRequirement(
+        courseId,
+        response.stepId,
+        response.content,
+      );
+      return formatLessonPayload({
+        courseId: response.courseId,
+        lessonId: response.lessonId,
+        stepId: response.stepId,
+        content: response.content,
+      });
+    }
+
+    if (!args.lessonId) {
+      const session = await ensureCourseSession(
+        courseId,
+        args.resume !== false,
+      );
+      if (!session) {
+        return `Course "${courseId}" has no content.`;
+      }
+      const step = session.steps[session.index];
+      if (!step) {
+        return `Course "${courseId}" has no content.`;
+      }
+      const response = await fetchLessonContent({
+        courseId,
+        stepId: step.stepId,
+      });
+      await syncSessionToStep(courseId, response.stepId);
+      await trackStepQuizRequirement(
+        courseId,
+        response.stepId,
+        response.content,
+      );
+      return formatLessonPayload({
+        courseId: response.courseId,
+        lessonId: response.lessonId,
+        stepId: response.stepId,
+        content: response.content,
+        courseTitle: response.courseTitle,
+        includeIntro: true,
+      });
+    }
+
+    const response = await fetchLessonContent({
+      courseId,
+      lessonId: args.lessonId,
+    });
+    await syncSessionToStep(courseId, response.stepId);
+    await trackStepQuizRequirement(courseId, response.stepId, response.content);
+    return formatLessonPayload({
+      courseId: response.courseId,
+      lessonId: response.lessonId,
+      stepId: response.stepId,
+      content: response.content,
+    });
+  },
+};

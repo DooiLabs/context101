@@ -1,8 +1,24 @@
-import { buildCourseContent } from "./course-content.js";
-import { getOverviewInputSchema } from "./schemas.js";
-import { resolveCourseId } from "../../config.js";
+import { z } from "zod";
+import { buildCourseContent } from "./utils/course-session.js";
+import { resolveCourseId } from "../config.js";
 
-function formatOverview(content: Awaited<ReturnType<typeof buildCourseContent>>) {
+const courseIdSchema = z.preprocess(
+  (value) =>
+    typeof value === "string" && value.trim().length === 0 ? undefined : value,
+  z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Course ID to start or resume. Defaults to --course."),
+);
+
+const getOverviewInputSchema = z.object({
+  courseId: courseIdSchema,
+});
+
+function formatOverview(
+  content: Awaited<ReturnType<typeof buildCourseContent>>,
+) {
   const lines: string[] = [`Course: ${content.courseId}`, "", "Lessons:"];
   if (!content.lessons.length) {
     return `${lines.join("\n")}\n- No lessons found.`;
