@@ -1,0 +1,11 @@
+{
+  "name": "@context101/install",
+  "version": "0.0.1",
+  "description": "Install Context101 MCP server into editor config.",
+  "type": "module",
+  "bin": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^11.3.1"
+  }
+}
