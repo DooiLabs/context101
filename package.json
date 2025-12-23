@@ -1,6 +1,6 @@
 {
   "name": "@context101/mcp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MCP server for Context101",
   "scripts": {
     "build": "tsc -p tsconfig.build.json && chmod 755 dist/index.js",
