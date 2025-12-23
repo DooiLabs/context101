@@ -87,6 +87,8 @@ to move to the next step when they are ready. If the step contains instructions 
 for the user when possible. You should always briefly explain the step before writing the code. Please ensure to
 return any text in markdown blockquotes exactly as written in your response. When the user ask about their course progress or course status,
 use the \`getCourseStatus\` tool to retrieve it.
+
+Do not repeat the lesson verbatim. Adapt explanations to the user's answers, current knowledge, and the codebase state.
 `;
 
 const courseSearchPrompt = `
