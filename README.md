@@ -34,8 +34,7 @@
 🧠 **Personalized learning roadmap** : Context101 remembers your questions, struggles, and progress. By asking the right follow-up questions as you learn, it continuously refines a roadmap tailored just for you.
 
 
-Have fun learning with Context101!
-
+Traditional courses (like Udemy, Coursera) take 100+ hours. Context101 gets you building a website in about an hour.  Have fun learning with Context101!
 
 
 ## Quick Start
