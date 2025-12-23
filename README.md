@@ -80,8 +80,6 @@ Teach me React step-by-step by building a small project.
 ```
 That's it! Now your AI code editor would act like a tutor, with structured courses.
 
-<img width="1721" height="1056" alt="Screenshot 2025-12-23 at 11 33 42 AM" src="https://github.com/user-attachments/assets/606837f1-dfbb-4aaf-857d-efcf860e2031" />
-
 ## Highlights
 
 
