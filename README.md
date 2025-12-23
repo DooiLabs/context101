@@ -20,7 +20,7 @@
 
 ---
 
-📚 **Documentation**: [https://context101.org/](https://contexet101.org/)
+📚 **Documentation**: [https://context101.org/](https://context101.org/)
 
 👥 **Community**: [Join Our Discord](https://discord.gg/5cEy3Jqek3)
 
