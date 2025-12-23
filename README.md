@@ -1,6 +1,6 @@
 # Context101
 
-<img width="3000" height="1000" alt="image" src="https://github.com/user-attachments/assets/0c5cf1f1-1339-4477-81b1-625d6755e2fe" />
+<img width="3000" height="1000" alt="image" src="https://github.com/user-attachments/assets/15f224b9-1cfb-43de-af70-05d9aa7592a0" />
 
 <p align="center">
   <strong>Context101</strong>
