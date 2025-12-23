@@ -1,4 +1,8 @@
-import { getStep, listCourses, listLessons, listSteps } from "./course-api.js";
+import {
+  getOverview,
+  nextCourseStep,
+  startCourseLesson,
+} from "./course-api.js";
 import {
   appendQuizResult,
   clearCourseProgress,
@@ -62,67 +66,27 @@ const courseSessions = new Map<string, CourseSession>();
 export async function buildCourseContent(
   courseId: string,
 ): Promise<CourseContent> {
-  const lessonsResponse = await listLessons(courseId);
-  const sortedLessons = [...lessonsResponse.data].sort(
-    (a, b) => a.order - b.order,
-  );
-  const lessons = await Promise.all(
-    sortedLessons.map(async (lesson) => {
-      const stepsResponse = await listSteps(courseId, lesson.id);
-      return {
-        id: lesson.id,
-        title: lesson.title,
-        order: lesson.order,
-        steps: stepsResponse.data
-          .map((step) => ({
-            id: step.id,
-            title: step.title,
-            order: step.order,
-            lessonId: lesson.id,
-          }))
-          .sort((a, b) => a.order - b.order),
-      };
-    }),
-  );
+  const overview = await getOverview(courseId);
+  const lessons = [...overview.lessons]
+    .sort((a, b) => a.order - b.order)
+    .map((lesson) => ({
+      id: lesson.id,
+      title: lesson.title,
+      order: lesson.order,
+      steps: [...lesson.steps]
+        .sort((a, b) => a.order - b.order)
+        .map((step) => ({
+          id: step.id,
+          title: step.title,
+          order: step.order,
+          lessonId: lesson.id,
+        })),
+    }));
 
   return {
-    courseId,
+    courseId: overview.courseId,
     lessons,
   };
-}
-
-export async function loadCourseCatalog(limit: number) {
-  const response = await listCourses({ limit, offset: 0 });
-  return response.data.map((course) => ({
-    id: course.id,
-    title: course.title,
-    description: course.description ?? "",
-    tags: course.tags ?? [],
-    source: "context101",
-    version: course.version,
-    updatedAt: course.updatedAt,
-    status:
-      course.status === "draft" || course.status === "archived"
-        ? course.status
-        : "active",
-    overview: course.overview
-      ? {
-          lessons: course.overview.lessons ?? [],
-          lessonIds: course.overview.lessonIds ?? [],
-          stepCounts: course.overview.stepCounts ?? [],
-          totalSteps: course.overview.totalSteps ?? undefined,
-        }
-      : undefined,
-  })) satisfies CourseMeta[];
-}
-
-export async function fetchStepContent(
-  courseId: string,
-  lessonId: string,
-  stepId: string,
-) {
-  const response = await getStep(courseId, lessonId, stepId);
-  return response.data.content;
 }
 
 function detectQuizRequirement(content: string) {
@@ -135,15 +99,13 @@ function detectQuizRequirement(content: string) {
   return hasQuiz && hasAnswer;
 }
 
-export async function fetchStepContentAndTrack(
+export async function trackStepQuizRequirement(
   courseId: string,
-  lessonId: string,
   stepId: string,
+  content: string,
 ) {
-  const content = await fetchStepContent(courseId, lessonId, stepId);
   const quizRequired = detectQuizRequirement(content);
   await setStepQuizRequired(courseId, stepId, quizRequired);
-  return content;
 }
 
 function buildLessonLastIndex(steps: CourseStep[]) {
@@ -235,37 +197,91 @@ export async function getCourseSession(courseId: string) {
   return ensureCourseSession(courseId, true);
 }
 
-export async function moveCourseSessionToLesson(
+async function updateSessionIndex(
   courseId: string,
-  lessonId: string,
+  session: CourseSession,
+  index: number,
 ) {
-  const session = await ensureCourseSession(courseId, true);
-  if (!session) return { status: "missing" as const };
-  const index = session.steps.findIndex((step) => step.lessonId === lessonId);
-  if (index === -1) return { status: "missing_lesson" as const };
   session.index = index;
   session.updatedAt = new Date().toISOString();
   await persistSession(courseId, session);
-  return { status: "ok" as const, session };
 }
 
-export async function advanceCourseSession(courseId: string) {
-  const session = courseSessions.get(courseId);
-  if (!session) return { status: "missing" as const };
-  if (session.index + 1 >= session.steps.length) {
+async function refreshSessionForStep(courseId: string, stepId: string) {
+  const steps = await buildCourseStepList(courseId);
+  if (!steps.length) return null;
+  const index = steps.findIndex((step) => step.stepId === stepId);
+  if (index === -1) return null;
+  const session: CourseSession = {
+    steps,
+    index,
+    updatedAt: new Date().toISOString(),
+    lessonLastIndex: buildLessonLastIndex(steps),
+  };
+  courseSessions.set(courseId, session);
+  await persistSession(courseId, session);
+  return session;
+}
+
+export async function syncSessionToStep(courseId: string, stepId: string) {
+  const session = await ensureCourseSession(courseId, true);
+  if (!session) return null;
+  const index = session.steps.findIndex((step) => step.stepId === stepId);
+  if (index >= 0) {
+    await updateSessionIndex(courseId, session, index);
+    return session;
+  }
+  return refreshSessionForStep(courseId, stepId);
+}
+
+export async function requestNextStep(
+  courseId: string,
+  session: CourseSession,
+) {
+  const current = session.steps[session.index];
+  if (!current) return { status: "missing" as const };
+  const next = session.steps[session.index + 1];
+  if (!next) {
     session.updatedAt = new Date().toISOString();
     await persistSession(courseId, session);
     return { status: "completed" as const, session };
   }
-  session.index += 1;
-  session.updatedAt = new Date().toISOString();
-  await persistSession(courseId, session);
-  return { status: "ok" as const, session };
+
+  const response = await nextCourseStep({
+    courseId,
+    currentStepId: current.stepId,
+    nextStepId: next.stepId,
+  });
+
+  if (response.status === "completed") {
+    await updateSessionIndex(courseId, session, session.steps.length - 1);
+    return { status: "completed" as const, session, response };
+  }
+
+  if (response.stepId !== next.stepId) {
+    const refreshed = await refreshSessionForStep(courseId, response.stepId);
+    if (!refreshed) {
+      await updateSessionIndex(courseId, session, session.index + 1);
+      return { status: "ok" as const, session, response };
+    }
+    return { status: "ok" as const, session: refreshed, response };
+  }
+
+  await updateSessionIndex(courseId, session, session.index + 1);
+  return { status: "ok" as const, session, response };
 }
 
 export async function clearCourseSession(courseId: string) {
   courseSessions.delete(courseId);
   return clearCourseProgress(courseId);
+}
+
+export async function fetchLessonContent(params: {
+  courseId: string;
+  lessonId?: string;
+  stepId?: string;
+}) {
+  return startCourseLesson(params);
 }
 
 export function findCourseIdByStepId(stepId: string) {

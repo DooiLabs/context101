@@ -12,7 +12,7 @@ import {
 } from "./tools/course/index.js";
 import { getDocsTool } from "./tools/docs/get-docs.js";
 import { getDefaultCourseId, setDefaultCourseId } from "./config.js";
-import { getCourse } from "./tools/course/course-api.js";
+import { getOverview } from "./tools/course/course-api.js";
 
 const server = new FastMCP({
   name: "Context101",
@@ -62,7 +62,7 @@ async function main() {
   const defaultCourseId = getDefaultCourseId();
   if (defaultCourseId) {
     try {
-      await getCourse(defaultCourseId);
+      await getOverview(defaultCourseId);
     } catch (error) {
       console.error(
         `Invalid --course "${defaultCourseId}". Server will not start.`,

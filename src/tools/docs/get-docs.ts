@@ -1,5 +1,5 @@
 import { getDocsInputSchema } from "../course/schemas.js";
-import { fetchDocs } from "./docs-api.js";
+import { getDocs } from "../course/course-api.js";
 import { resolveCourseId } from "../../config.js";
 
 export const getDocsTool = {
@@ -16,11 +16,12 @@ export const getDocsTool = {
     if (!courseId) {
       return "Pass courseId or start the server with --course <id>.";
     }
-    return fetchDocs({
-      id: courseId,
+    const response = await getDocs({
+      courseId,
       mode: args.mode,
       tokens: args.tokens,
       topic: args.topic,
     });
+    return response.text;
   },
 };

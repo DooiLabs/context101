@@ -1,10 +1,13 @@
 import { nextCourseStepInputSchema } from "./schemas.js";
 import {
-  advanceCourseSession,
-  fetchStepContentAndTrack,
+  getCourseSession,
+  requestNextStep,
+  syncSessionToStep,
+  trackStepQuizRequirement,
 } from "./course-content.js";
 import { wrapLessonContent } from "./prompt.js";
 import { resolveCourseId } from "../../config.js";
+import { nextCourseStep } from "./course-api.js";
 
 function formatNextPayload(payload: {
   courseId: string;
@@ -25,12 +28,45 @@ export const nextCourseStepTool = {
   name: "nextCourseStep",
   description: "Advance to the next step in a course.",
   parameters: nextCourseStepInputSchema,
-  execute: async (args: { courseId?: string }) => {
+  execute: async (args: {
+    courseId?: string;
+    currentStepId?: string;
+    nextStepId?: string;
+  }) => {
     const courseId = resolveCourseId(args.courseId);
     if (!courseId) {
       return "Pass courseId or start the server with --course <id>.";
     }
-    const result = await advanceCourseSession(courseId);
+    if (args.currentStepId && args.nextStepId) {
+      const response = await nextCourseStep({
+        courseId,
+        currentStepId: args.currentStepId,
+        nextStepId: args.nextStepId,
+      });
+      if (response.status === "completed") {
+        await syncSessionToStep(courseId, response.stepId);
+        return `Course "${courseId}" completed.`;
+      }
+      await syncSessionToStep(courseId, response.stepId);
+      await trackStepQuizRequirement(
+        courseId,
+        response.stepId,
+        response.content,
+      );
+      return formatNextPayload({
+        courseId: response.courseId,
+        lessonId: response.lessonId,
+        stepId: response.stepId,
+        content: response.content,
+      });
+    }
+
+    const session = await getCourseSession(courseId);
+    if (!session) {
+      return "No course progress found. Start with `startCourseLesson`.";
+    }
+
+    const result = await requestNextStep(courseId, session);
     if (result.status === "missing") {
       return "No course progress found. Start with `startCourseLesson`.";
     }
@@ -38,20 +74,17 @@ export const nextCourseStepTool = {
       return `Course "${courseId}" completed.`;
     }
 
-    const step = result.session.steps[result.session.index];
-    if (!step) {
+    const response = result.response;
+    if (!response) {
       return `Course "${courseId}" has no next step.`;
     }
 
+    await trackStepQuizRequirement(courseId, response.stepId, response.content);
     return formatNextPayload({
-      courseId,
-      lessonId: step.lessonId,
-      stepId: step.stepId,
-      content: await fetchStepContentAndTrack(
-        courseId,
-        step.lessonId,
-        step.stepId,
-      ),
+      courseId: response.courseId,
+      lessonId: response.lessonId,
+      stepId: response.stepId,
+      content: response.content,
     });
   },
 };

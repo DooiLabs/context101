@@ -27,6 +27,16 @@ const courseIdSchema = z.preprocess(
 
 export const nextCourseStepInputSchema = z.object({
   courseId: courseIdSchema,
+  currentStepId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Current step ID for next step lookup."),
+  nextStepId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Next step ID to fetch directly."),
 });
 
 export const getCourseStatusInputSchema = z.object({
@@ -74,5 +84,10 @@ export const startCourseLessonInputSchema = z.object({
     .min(1)
     .optional()
     .describe("Lesson ID to start or review. Omit to resume the course."),
+  stepId: z
+    .string()
+    .min(1)
+    .optional()
+    .describe("Step ID to resume directly within a lesson."),
   resume: z.boolean().optional().default(true),
 });
