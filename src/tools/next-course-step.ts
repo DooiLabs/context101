@@ -53,8 +53,9 @@ This MCP server is locked to a single course. Do not search for or switch to oth
 `;
 
 const quizPrompt = `
-Only use a quiz if the step content explicitly includes a quiz and an answer. Do not invent or add a quiz when the
-content does not contain one; in that case, proceed normally to the next step when the user is ready.
+If the step content includes a quiz and an answer, you must present the quiz content to the user. Do not hide or omit it.
+Do not invent a quiz when the content does not contain one; in that case, proceed normally to the next step when ready.
+Keep quiz wording aligned with the lesson's phrasing and respond in the user's language.
 If a quiz and answer are present, ask the quiz from the content and wait for the user's response. Grade the answer
 using the provided answer in the content, then call \`recordQuizResult\` with the stepId, question, correct answer,
 user answer, and grading result. If the answer is incorrect, ask them to try again before moving on.

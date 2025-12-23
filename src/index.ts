@@ -45,7 +45,8 @@ function parseCourseArg(args: string[]) {
 }
 
 setDefaultCourseId(parseCourseArg(process.argv.slice(2)));
-if (!getDefaultCourseId()) {
+const defaultCourseId = getDefaultCourseId();
+if (!defaultCourseId) {
   server.addTool({
     name: searchCoursesTool.name,
     description: searchCoursesTool.description,
@@ -54,17 +55,21 @@ if (!getDefaultCourseId()) {
   });
 }
 
+function decorateDescription(description: string) {
+  if (!defaultCourseId) return description;
+  return `${description} (Context101 course: ${defaultCourseId})`;
+}
+
 for (const tool of courseTools) {
   server.addTool({
     name: tool.name,
-    description: tool.description,
+    description: decorateDescription(tool.description),
     parameters: tool.parameters,
     execute: async (args) => tool.execute(args as any),
   });
 }
 
 async function main() {
-  const defaultCourseId = getDefaultCourseId();
   if (defaultCourseId) {
     try {
       await getOverview(defaultCourseId);
