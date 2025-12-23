@@ -1,28 +1,11 @@
-# Context101
-
 <img width="3000" height="1000" alt="image" src="https://github.com/user-attachments/assets/15f224b9-1cfb-43de-af70-05d9aa7592a0" />
 
+
+<h1 align="center">Context101 MCP : Learn to code AI-native</h1>
 <p align="center">
-  <strong>Context101</strong>
+  <a href="https://cursor.com/en-US/install-mcp?name=context101&config=eyJjb21tYW5kIjoibnB4IC15IEBjb250ZXh0MTAxL21jcCJ9"><img src="https://cursor.com/deeplink/mcp-install-light.svg" alt="Add context101 MCP server to Cursor" height="32" /></a> <a href="https://cursor.com/en-US/install-mcp?name=context101&config=eyJjb21tYW5kIjoibnB4IC15IEBjb250ZXh0MTAxL21jcCJ9"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add context101 MCP server to Cursor" height="32" /></a>
 </p>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@context101/mcp"><img src="https://img.shields.io/npm/v/@context101/mcp.svg"></a>
-  <a href="https://www.npmjs.com/package/@context101/mcp"><img src="https://img.shields.io/npm/dm/@context101/mcp.svg"></a>
-  <a href="https://github.com/DooiLabs/context101/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache-blue.svg" alt="License"></a>
-  <a href="https://github.com/DooiLabs/FastApps/actions"><img src="https://github.com/DooiLabs/FastApps/workflows/CI/badge.svg" alt="CI Status"></a>
-  <a href="https://github.com/DooiLabs/context101"><img src="https://img.shields.io/github/stars/DooiLabs/context101?style=social" alt="GitHub Stars"></a>
-</p>
-
-
-
----
-
-📚 **Documentation**: [https://context101.org/](https://context101.org/)
-
-👥 **Community**: [Join Our Discord](https://discord.gg/5cEy3Jqek3)
-
----
 > Context101 is an MCP server that works inside your AI code editor.
 
 💬 **AI-native courses inside your editor** : Learn by building with AI. Whether you’re using Cursor or another AI code editor, Context101 guides you through real projects (like building a website) while teaching how to learn and work with AI in the AI era.
