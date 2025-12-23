@@ -27,11 +27,11 @@
 ---
 > Context101 is an MCP server that works inside your AI code editor.
 
-🤖 **Structured learning, powered by MCP** — Context101 turns casual AI conversations into step-by-step structured courses. Instead of fragmented answers, every interaction becomes a clear learning path with defined stages and goals.
+💬 **AI-native courses inside your editor** : Learn by building with AI. Whether you’re using Cursor or another AI code editor, Context101 guides you through real projects (like building a website) while teaching how to learn and work with AI in the AI era.
 
-💬 **AI-native courses inside your editor** — Learn by building with AI. Whether you’re using Cursor or another AI code editor, Context101 guides you through real projects (like building a website) while teaching *how to learn and work with AI* in the AI era.
+🤖 **Structured learning, powered by MCP** : Context101 provides structured courses as an MCP, making learning with AI more effective. Instead of unstructured AI chats, Context101 organizes conversations into clear, step-by-step learning flows.
 
-🧠 **Personalized learning roadmap** — Context101 remembers your questions, struggles, and progress. By asking the right follow-up questions as you learn, it continuously refines a roadmap tailored just for you—so your learning adapts as you do.
+🧠 **Personalized learning roadmap** : Context101 remembers your questions, struggles, and progress. By asking the right follow-up questions as you learn, it continuously refines a roadmap tailored just for you.
 
 
 Have fun learning with Context101!
